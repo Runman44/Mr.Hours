@@ -41,10 +41,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
          name: apk-build
-       - name: Upload APK
-         uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
-         with:
-           appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-           token: ${{secrets.FIREBASE_TOKEN}}
-           group: tellow-time
-           file: app-release.apk
+      - name: Upload APK
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
+        with:
+         appId: ${{secrets.FIREBASE_ANDROID_APPID}}
+         token: ${{secrets.FIREBASE_TOKEN}}
+         group: tellow-time
+         file: app-release.apk
