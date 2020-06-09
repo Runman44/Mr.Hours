@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:eventtracker/resource/network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 
@@ -30,13 +31,12 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-
     return directory.path;
   }
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/teste.pdf');
+    return File('$path/tellow-time-hours.pdf');
   }
 
   Future<File> writeCounter(Uint8List stream) async {
@@ -45,6 +45,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
     // Write the file
     return file.writeAsBytes(stream);
   }
+
 
   loadPdf(String id, DatePeriod datePeriod) async {
     writeCounter(await getPdfReport(id, datePeriod));
@@ -60,11 +61,20 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Pdf"),
+        actions: <Widget>[
+          // action button
+          Visibility(
+            visible: path != null ? true : false,
+            child: IconButton(
+              icon: Icon(Icons.file_download),
+              onPressed: () {
+
+              },
+            ),
+          ),
+        ],
       ),
-      body: Container(
-        alignment: Alignment.center,
-        child: pdfView()
-      ),
+      body: Container(alignment: Alignment.center, child: pdfView()),
     );
   }
 
