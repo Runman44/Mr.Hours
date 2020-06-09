@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "675828645530",
+    "firebase_url": "https://hellotellow-test.firebaseio.com",
+    "project_id": "hellotellow-test",
+    "storage_bucket": "hellotellow-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675828645530:android:aa238f506fea183707e923",
+        "android_client_info": {
+          "package_name": "nl.mranderson.eventtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675828645530-3thb6bmvsd9qldmqp3923uvr3sklppr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb2ihtkKafBW2QKkqgLP5VDF7EnZbqMkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675828645530-3thb6bmvsd9qldmqp3923uvr3sklppr6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675828645530:android:71bcfa65d1ad0b89",
+        "android_client_info": {
+          "package_name": "nl.tellow.app.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675828645530-3thb6bmvsd9qldmqp3923uvr3sklppr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb2ihtkKafBW2QKkqgLP5VDF7EnZbqMkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675828645530-3thb6bmvsd9qldmqp3923uvr3sklppr6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

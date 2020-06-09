@@ -20,30 +20,13 @@ jobs:
       uses: subosito/flutter-action@v1.3.2
     - name: Install dependencies
       run: flutter pub get
-    - run: flutter build appbundle
+    - run: flutter build apk
     - name: Upload APK
       uses: actions/upload-artifact@master
       with:
         name: apk-build
         path: build/app/outputs/apk/release
-  
-#     - name: Firebase App Distribution
-#       uses: wzieba/Firebase-Distribution-Github-Action@v1.2.1
-#       with:
-#         # App id can be found on the General Settings page
-#         appId: 
-#         # Upload token - see Firebase CLI Reference
-#         token: 
-#         # Artifact to upload (.apk or .ipa)
-#         file: 
-#         # Distribution groups
-#         groups: # optional
-#         # Release notes visible on release page
-#         # releaseNotes: # optional
-#         # Release notes visible on release page
-#         # releaseNotesFile: # optional
-#         # Flag that can included to print verbose log output.
-#         # debug: # optional
+
   beta_apk:
       name: Upload Android Beta to Firebase App Distribution
       needs: [build_apk]
@@ -55,13 +38,13 @@ jobs:
         with:
           java-version: 1.8
       - name: Download Artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v2
         with:
           name: apk-build
-#       - name: Upload APK
-#         uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
-#         with:
-#           appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-#           token: ${{secrets.FIREBASE_TOKEN}}
-#           group: testers
-#           file: app-release.aap
+       - name: Upload APK
+         uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
+         with:
+           appId: ${{secrets.FIREBASE_ANDROID_APPID}}
+           token: ${{secrets.FIREBASE_TOKEN}}
+           group: tellow-time
+           file: app-release.apk
