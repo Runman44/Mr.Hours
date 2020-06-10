@@ -2,9 +2,9 @@ name: Deploy Android
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   build_apk:
@@ -25,7 +25,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: apk-build
-        path: build/app/outputs/apk/release
+        path: build/app/outputs/apk/debug
 
   beta_apk:
       name: Upload Android Beta to Firebase App Distribution
@@ -46,5 +46,5 @@ jobs:
         with:
          appId: ${{secrets.FIREBASE_ANDROID_APPID}}
          token: ${{secrets.FIREBASE_TOKEN}}
-         group: tellow-time
-         file: app-release.apk
+         group: time
+         file: app-debug.apk
