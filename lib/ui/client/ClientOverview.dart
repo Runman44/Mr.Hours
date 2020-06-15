@@ -9,21 +9,11 @@ class ClientPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Opdrachtgever"),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
-            ),
-          ),
-        ),
-      ),
-      body: BlocBuilder<ClientBloc, ClientState>(
-        bloc: clientBloc,
-        builder: (context, clientState) {
-          return ListView(
+    return BlocBuilder<ClientBloc, ClientState>(
+      bloc: clientBloc,
+      builder: (context, clientState) {
+        return Material(
+          child: ListView(
             children: clientState.clients
                 .map((event) => Container(
                       decoration: BoxDecoration(
@@ -33,27 +23,22 @@ class ClientPage extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 4.0),
                       child: ListTile(
-                        leading: Bullet(color: event.color,),
+                        leading: Bullet(
+                          color: event.color,
+                        ),
                         title: Text(event.name),
-                        onTap: () =>Navigator.push(
+                        onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ClientEditor(client: event)),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ClientEditor(client: event)),
                         ),
                       ),
                     ))
                 .toList(),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.person_add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ClientEditor(client: null)),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

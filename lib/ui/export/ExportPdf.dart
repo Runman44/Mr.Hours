@@ -61,6 +61,16 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Pdf"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).accentColor
+              ],
+            ),
+          ),
+        ),
         actions: <Widget>[
           // action button
           Visibility(

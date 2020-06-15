@@ -33,18 +33,7 @@ class _ExportPageState extends State<ExportPage> {
   Widget build(BuildContext context) {
     ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Rapportage"),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
-            ),
-          ),
-        ),
-      ),
-      body: BlocBuilder<ClientBloc, ClientState>(
+    return BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,
         builder: (context, clientState) {
           return Padding(
@@ -112,7 +101,6 @@ class _ExportPageState extends State<ExportPage> {
             ]),
           );
         },
-      ),
     );
   }
 

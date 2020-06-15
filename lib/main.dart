@@ -5,16 +5,17 @@ import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/client/ClientEditor.dart';
 import 'package:eventtracker/ui/client/ClientOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
+import 'package:eventtracker/ui/export/ExportOverview.dart';
 import 'package:eventtracker/ui/login/login.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:spincircle_bottom_bar/modals.dart';
+import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
 
 import 'bloc/ClientBloc.dart';
 import 'bloc/UserBloc.dart';
-import 'ui/export/ExportOverview.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
@@ -27,7 +28,7 @@ void main() {
           ),
           BlocProvider<DashboardBloc>(
             create: (context) => DashboardBloc(
-                clientBloc: BlocProvider.of<ClientBloc>(context),
+              clientBloc: BlocProvider.of<ClientBloc>(context),
             ),
           ),
         ],
@@ -64,131 +65,117 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    DashboardOverview(),
+    ClientPage(),
+    ExportPage(),
+    ExportPage()
+  ];
+  final List<String> _appBarTitle = [
+    "Overzicht",
+    "Opdrachtgevers",
+    "Rapportage",
+    "Instellingen"
+  ];
 
   @override
   Widget build(BuildContext context) {
     UserBloc userBloc = BlocProvider.of<UserBloc>(context);
 
     return Scaffold(
-//      drawer: Drawer(
-//        child: ListView(
-//          // Important: Remove any padding from the ListView.
-//          padding: EdgeInsets.zero,
-//          children: <Widget>[
-//            DrawerHeader(
-//              child: Text(
-//                getWelcomeMessage(userBloc.state),
-//                style: TextStyle(color: Colors.white, fontSize: 25),
-//              ),
-//              decoration: BoxDecoration(
-//                color: Colors.deepPurple,
-////                  image: DecorationImage(
-////                      fit: BoxFit.fill,
-////                      image: AssetImage('assets/images/cover.jpg')
-////                  )
-//              ),
-//            ),
-//            ListTile(
-//              leading: Icon(Icons.person),
-//              title: Text('Opdrachtgevers'),
-//              onTap: () {
-//                // Update the state of the app
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => ClientPage()),
-//                );
-//                // Then close the drawer
-//              },
-//            ),
-//            ListTile(
-//              leading: Icon(Icons.pie_chart),
-//              title: Text('Rapportage'),
-//              onTap: () {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => ExportPage()),
-//                );
-//              },
-//            ),
-//            ListTile(
-//              leading: Icon(Icons.settings),
-//              title: Text('Instellingen'),
-//              onTap: () {
-//                // Update the state of the app
-//                // ...
-//                // Then close the drawer
-//                Navigator.pop(context);
-//              },
-//            ),
-//          ],
-//        ),
-//      ),
       appBar: AppBar(
-        title: Text("Overzicht"),
+        title: Text(_appBarTitle[_currentIndex]),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).accentColor
+              ],
             ),
           ),
         ),
       ),
-      body: DashboardOverview(),
-//      floatingActionButton: SpeedDial(
-//        // both default to 16
-//        marginRight: 18,
-//        marginBottom: 20,
-//        animatedIcon: AnimatedIcons.add_event,
-//        animatedIconTheme: IconThemeData(size: 26.0),
-//        // this is ignored if animatedIcon is non null
-//        // child: Icon(Icons.add),
-//        // If true user is forced to close dial manually
-//        // by tapping main button and overlay is not rendered.
-//        closeManually: false,
-//        curve: Curves.bounceIn,
-//        overlayColor: Colors.black,
-//        overlayOpacity: 0.5,
-//        onOpen: () => print('OPENING DIAL'),
-//        onClose: () => print('DIAL CLOSED'),
-//        tooltip: 'Speed Dial',
-//        heroTag: 'speed-dial-hero-tag',
-//        elevation: 8.0,
-//        shape: CircleBorder(),
-//        children: [
-//          SpeedDialChild(
-//              child: Icon(Icons.access_time, color: Colors.deepPurple,),
-//              backgroundColor: Colors.white,
-//              label: 'Uren',
-//              labelStyle: TextStyle(fontSize: 18.0),
-//              onTap: () {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                      builder: (context) => RegistrationEditor(
-//                            client: null,
-//                            project: null,
-//                            registration: null,
-//                            pickedDate: DateTime.now(),
-//                          )),
-//                );
-//              }
-//          ),
-//          SpeedDialChild(
-//            child: Icon(Icons.person_add, color: Colors.deepPurple,),
-//            backgroundColor: Colors.white,
-//            label: 'Opdrachtgever',
-//            labelStyle: TextStyle(fontSize: 18.0),
-//              onTap: () {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                    builder: (context) => ClientEditor(client: null),
-//                  ),
-//                );
-//              }
-//          ),
-//        ],
-//      ),
+      body: SpinCircleBottomBarHolder(
+        bottomNavigationBar: SCBottomBarDetails(
+            circleColors: [Colors.white, Theme.of(context).accentColor, Theme.of(context).primaryColor],
+            iconTheme: IconThemeData(color: Colors.black45),
+            activeIconTheme: IconThemeData(color: Theme.of(context).accentColor),
+            backgroundColor: Colors.white,
+            titleStyle: TextStyle(color: Colors.black45, fontSize: 12),
+            activeTitleStyle: TextStyle(
+                color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
+            actionButtonDetails: SCActionButtonDetails(
+                color: Theme.of(context).accentColor,
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                elevation: 2),
+            elevation: 2.0,
+            items: [
+              // Suggested count : 4
+              SCBottomBarItem(
+                  icon: Icons.view_list,
+                  title: "Overzicht",
+                  onPressed: () {
+                    setState(() {
+                      _currentIndex = 0;
+                    });
+                  }),
+              SCBottomBarItem(
+                  icon: Icons.person,
+                  title: "Clienten",
+                  onPressed: () {
+                    setState(() {
+                      _currentIndex = 1;
+                    });
+                  }),
+              SCBottomBarItem(
+                  icon: Icons.pie_chart,
+                  title: "Rapportage",
+                  onPressed: () {
+                    setState(() {
+                      _currentIndex = 2;
+                    });
+                  }),
+              SCBottomBarItem(
+                  icon: Icons.settings,
+                  title: "Instellingen",
+                  onPressed: () {
+                    setState(() {
+                      _currentIndex = 3;
+                    });
+                  }),
+            ],
+            circleItems: [
+              SCItem(icon: Icon(Icons.person_add), onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClientEditor(client: null),
+                  ),
+                );
+              }),
+              SCItem(icon: Icon(Icons.access_time), onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RegistrationEditor(
+                            client: null,
+                            project: null,
+                            registration: null,
+                            pickedDate: DateTime.now(),
+                          )),
+                );
+              }),
+            ],
+            bnbHeight: 80 // Suggested Height 80
+            ),
+        // Put your Screen Content in Child
+        child: _children[_currentIndex],
+      ),
     );
   }
 
