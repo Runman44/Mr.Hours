@@ -1,16 +1,10 @@
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/resource/network.dart';
 import 'package:eventtracker/ui/export/ExportPdf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
-import 'package:time/time.dart';
 
 class ExportPage extends StatefulWidget {
   @override
@@ -22,6 +16,7 @@ class _ExportPageState extends State<ExportPage> {
   DateTime _firstDate;
   DateTime _lastDate;
   DatePeriod _selectedPeriod;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -38,10 +33,16 @@ class _ExportPageState extends State<ExportPage> {
   Widget build(BuildContext context) {
     ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
 
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Rapportage"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,
@@ -53,31 +54,35 @@ class _ExportPageState extends State<ExportPage> {
                 "Kies een opdrachtgever",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: DropdownButton(
-                  isExpanded: true,
-                  disabledHint: Text(""),
-                  hint: Text("Selecteer een opdrachtgever"),
-                  value: _dropdownValue,
-                  icon: Icon(Icons.arrow_drop_down),
-                  style: TextStyle(color: Colors.deepPurple),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _dropdownValue = newValue;
-                    });
-                  },
-                  items: clientBloc.state.clients
-                      .map<DropdownMenuItem<Client>>((Client value) {
-                    return DropdownMenuItem<Client>(
-                      value: value,
-                      child: Text(value.name),
-                    );
-                  }).toList(),
+              Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: DropdownButtonFormField(
+                  validator: (Client value) => value == null ? "Selecteer eerst een opdrachtgever" : null,
+                    isExpanded: true,
+                    disabledHint: Text(""),
+                    hint: Text("Selecteer een opdrachtgever"),
+                    value: _dropdownValue,
+                    icon: Icon(Icons.arrow_drop_down),
+                    style: TextStyle(color: Colors.deepPurple),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _dropdownValue = newValue;
+                      });
+                    },
+                    items: clientBloc.state.clients
+                        .map<DropdownMenuItem<Client>>((Client value) {
+                      return DropdownMenuItem<Client>(
+                        value: value,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
               Text(
-                "Kies een maand",
+                "Kies een periode",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Padding(
@@ -92,10 +97,15 @@ class _ExportPageState extends State<ExportPage> {
                   color: Colors.deepPurple,
                   textColor: Colors.white,
                   onPressed: () {
-                    Navigator.push(
+                      bool valid = _formKey.currentState.validate();
+                      if (!valid) return;
+
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ExportPdfPage(clientId: _dropdownValue.id, selectedPeriod: _selectedPeriod)),
-                    );
+                        MaterialPageRoute(builder: (context) =>
+                            ExportPdfPage(clientId: _dropdownValue.id,
+                                selectedPeriod: _selectedPeriod)),
+                      );
                   },
                 ),
               ),

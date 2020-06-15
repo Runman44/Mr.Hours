@@ -49,6 +49,13 @@ class _ClientEditorState extends State<ClientEditor> {
               ? "Opdrachtgever toevoegen"
               : "Opdrachtgever wijzigen",
         ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,

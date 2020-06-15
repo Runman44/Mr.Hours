@@ -87,6 +87,13 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
         title: Text(
           widget.registration == null ? "Uren toevoegen" : "Uren wijzigen",
         ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,
@@ -176,7 +183,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                     ),
                   ),
                   Text(
-                    "Kies een startijd",
+                    "Kies een starttijd",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Padding(
@@ -223,59 +230,58 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: widget.registration != null,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: RaisedButton(
-                        child: Text("Uren Verwijderen"),
-                        color: Colors.red,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Visibility(
+                        visible: widget.registration != null,
+                        child: RaisedButton(
+                          child: Text("Uren Verwijderen"),
+                          color: Colors.red,
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            clientBloc.add(
+                              DeleteRegistration(widget.client, widget.project, widget.registration.id),
+                            );
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      RaisedButton(
+                        child: Text("Uren Opslaan"),
+                        color: Colors.deepPurple,
                         textColor: Colors.white,
                         onPressed: () async {
-                          clientBloc.add(
-                            DeleteRegistration(widget.client, widget.project, widget.registration.id),
-                          );
+                          bool valid = _formKey.currentState.validate();
+                          if (!valid) return;
+
+                          if (widget.client != null && widget.project != null && widget.registration != null) {
+                            clientBloc.add(EditRegistration(
+                                widget.client,
+                                widget.project,
+                                widget.registration,
+                                _date,
+                                _startTime,
+                                0,
+                                _endTime,
+                                widget.project.rate,
+                                widget.project.billable));
+                          } else {
+                            clientBloc.add(AddRegistration(
+                                _dropdownValue,
+                                _dropdownValue2,
+                                _date,
+                                _startTime,
+                                0,
+                                _endTime,
+                                _dropdownValue2.rate,
+                                _dropdownValue2.billable));
+                          }
+
                           Navigator.pop(context);
                         },
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: RaisedButton(
-                      child: Text("Uren Opslaan"),
-                      color: Colors.deepPurple,
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        bool valid = _formKey.currentState.validate();
-                        if (!valid) return;
-
-                        if (widget.client != null && widget.project != null && widget.registration != null) {
-                          clientBloc.add(EditRegistration(
-                              widget.client,
-                              widget.project,
-                              widget.registration,
-                              _date,
-                              _startTime,
-                              0,
-                              _endTime,
-                              widget.project.rate,
-                              widget.project.billable));
-                        } else {
-                          clientBloc.add(AddRegistration(
-                              _dropdownValue,
-                              _dropdownValue2,
-                              _date,
-                              _startTime,
-                              0,
-                              _endTime,
-                              _dropdownValue2.rate,
-                              _dropdownValue2.billable));
-                        }
-
-                        Navigator.pop(context);
-                      },
-                    ),
+                    ],
                   ),
                 ],
               ),

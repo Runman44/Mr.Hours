@@ -7,6 +7,13 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+            ),
+          ),
+        ),
       ),
       body: Container(
               alignment: Alignment.center,

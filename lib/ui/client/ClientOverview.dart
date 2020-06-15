@@ -12,6 +12,13 @@ class ClientPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Opdrachtgever"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,

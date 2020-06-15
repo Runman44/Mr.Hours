@@ -2,7 +2,6 @@ import 'dart:convert' show json;
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:eventtracker/extention.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:http/http.dart' as http;
