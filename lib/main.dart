@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/themes.dart';
+import 'package:eventtracker/ui/client/ClientCreate.dart';
 import 'package:eventtracker/ui/client/ClientEditor.dart';
 import 'package:eventtracker/ui/client/ClientOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ClientEditor(client: null),
+                    builder: (context) => ClientCreator(),
                   ),
                 );
               }),

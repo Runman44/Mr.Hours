@@ -3,10 +3,8 @@ import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/project/ProjectEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:intl/intl.dart';
-
-import 'ClientOverview.dart';
 
 class ClientEditor extends StatefulWidget {
   final Client client;
@@ -44,18 +42,46 @@ class _ClientEditorState extends State<ClientEditor> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.client == null
-              ? "Opdrachtgever toevoegen"
-              : "Opdrachtgever wijzigen",
-        ),
+        title: Text("Opdrachtgever",),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).accentColor
+              ],
             ),
           ),
         ),
+        actions: <Widget>[
+          // action button
+         IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                clientBloc.add(
+                  DeleteClient(widget.client.id),
+                );
+                Navigator.pop(context);
+              },
+            ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              bool valid = _formKey.currentState.validate();
+              if (!valid) return;
+
+                clientBloc.add(
+                  EditClient(
+                      widget.client.id,
+                      _nameController.text.trim(),
+                      _colour,
+                      widget.client.projects),
+                );
+
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<ClientBloc, ClientState>(
         bloc: clientBloc,
@@ -67,6 +93,14 @@ class _ClientEditorState extends State<ClientEditor> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                    child: Text(
+                      "Vul een naam in",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   TextFormField(
                     controller: _nameController,
                     validator: (String value) =>
@@ -87,62 +121,18 @@ class _ClientEditorState extends State<ClientEditor> {
                     shrinkWrap: true,
                     onColorChange: (Color color) => _colour = color,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                    child: ExpansionTile(
-                      initiallyExpanded: true,
-                      leading: Icon(Icons.attach_file),
-                      title: Text(
-                        "Projecten",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      children: getProductList(),
-                    ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Text(
+                    "Projecten",
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  Visibility(
-                    visible: widget.client != null,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: RaisedButton(
-                        child: Text("Opdrachtgever Verwijderen"),
-                        color: Colors.red,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          clientBloc.add(
-                            DeleteClient(widget.client.id),
-                          );
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: RaisedButton(
-                      child: Text("Opdrachtgever Opslaan"),
-                      color: Colors.deepPurple,
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        bool valid = _formKey.currentState.validate();
-                        if (!valid) return;
-
-                        if (widget.client == null) {
-                          clientBloc.add(CreateClient(
-                              _nameController.text.trim(), _colour));
-                        } else {
-                          clientBloc.add(
-                            EditClient(
-                                widget.client.id,
-                                _nameController.text.trim(),
-                                _colour,
-                                widget.client.projects),
-                          );
-                        }
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
+                  children: getProductList(),
+                ),
+              ),
                 ],
               ),
             ),
@@ -164,10 +154,9 @@ class _ClientEditorState extends State<ClientEditor> {
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: ListTile(
                 title: Text(project.name),
-                subtitle: Text("€ ${project.centsToDouble().toStringAsFixed(2)} per uur"),
-                trailing: Icon(
-                  Icons.attach_money,
-                  color: project.billable ? Colors.green : Colors.grey,
+                subtitle: Text(
+                    "€ ${project.centsToDouble().toStringAsFixed(2)} per uur"),
+                trailing: Text( project.billable ? "Factureerbaar" : "",
                 ),
                 onTap: () {
                   showDialog(
@@ -201,9 +190,9 @@ class _ClientEditorState extends State<ClientEditor> {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => ProjectEditor(
-                      project: null,
-                      client: widget.client,
-                    ));
+                          project: null,
+                          client: widget.client,
+                        ));
               } else {
                 showDialog(
                   context: context,
@@ -215,7 +204,8 @@ class _ClientEditorState extends State<ClientEditor> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                            child: Text("Eerst de opdrachtgever opslaan voordat je projecten kan toevoegen."),
+                            child: Text(
+                                "Eerst de opdrachtgever opslaan voordat je projecten kan toevoegen."),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

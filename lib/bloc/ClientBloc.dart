@@ -15,7 +15,11 @@ class LoadClient extends ClientsEvent {}
 class CreateClient extends ClientsEvent {
   final String name;
   final Color color;
-  const CreateClient(this.name, this.color);
+  final String projectName;
+  final double rate;
+  final bool billable;
+
+  const CreateClient(this.name, this.color, this.projectName, this.rate, this.billable);
 }
 
 class EditClient extends ClientsEvent {
@@ -126,8 +130,17 @@ class ClientBloc extends Bloc<ClientsEvent, ClientState> {
     }
     else if (event is CreateClient) {
       ClientDto newClient = await sendClient(event.name, event.color);
+      Client uiClient = Client.fromDto(newClient);
+
+      var amountInCents = (event.rate * 100).toInt();
+
+      ProjectDto newProject = await sendProject(event.projectName, event.billable, amountInCents, uiClient.id);
+      Project uiProject = Project.fromDto(newProject);
+
+      uiClient.projects.add(uiProject);
+
       List<Client> clients = state.clients;
-      clients.add(Client.fromDto(newClient));
+      clients.add(uiClient);
       yield ClientState(clients);
     }
     else if (event is EditClient) {
