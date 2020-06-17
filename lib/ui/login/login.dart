@@ -135,7 +135,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     "Ik heb al een account".toUpperCase(),
                     style: TextStyle(
                         fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
                         color: color),
                   ),
                 ),
