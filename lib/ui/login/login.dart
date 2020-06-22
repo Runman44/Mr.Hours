@@ -4,6 +4,8 @@ import 'package:eventtracker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'PinOverview.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -59,15 +61,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 repeatPauseDuration: Duration(seconds: 2),
                 startDelay: Duration(seconds: 1),
                 child: Material(
-                    elevation: 8.0,
+//                    elevation: 8.0,
                     shape: CircleBorder(),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey[100],
-                      child: FlutterLogo(
-                        size: 50.0,
-                      ),
-                      radius: 50.0,
+                      child: Image.asset('assets/images/ic_launcher.png'),
+                      radius: 55.0,
                     )),
+              ),
+              SizedBox(
+                height: 10.0,
               ),
               DelayedAnimation(
                 child: Text(
@@ -101,7 +104,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               ),
               DelayedAnimation(
                 child: Text(
-                  "Urenregistratie tool",
+                  "urenregistratie tool",
                   style: TextStyle(fontSize: 20.0, color: color),
                 ),
                 delay: delayedAmount + 3000,
@@ -127,12 +130,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MyHomePage()
+                          builder: (context) => PinPage()
                       ),
                     );
                   },
                   child: Text(
-                    "Ik heb al een account".toUpperCase(),
+                    "Ik heb al een account",
                     style: TextStyle(
                         fontSize: 20.0,
                         color: color),
@@ -160,19 +163,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         style: TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF8185E2),
+          color: Colors.purple,
         ),
       ),
     ),
   );
-
-  void _onTapDown(TapDownDetails details) {
-    _controller.forward();
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    _controller.reverse();
-  }
 
   _launchURL() async {
     const url = 'https://app.tellow.nl/registreer';

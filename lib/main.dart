@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/client/ClientCreate.dart';
-import 'package:eventtracker/ui/client/ClientEditor.dart';
 import 'package:eventtracker/ui/client/ClientOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
 import 'package:eventtracker/ui/export/ExportOverview.dart';

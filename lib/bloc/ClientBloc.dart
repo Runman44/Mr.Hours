@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:eventtracker/model/model.dart';
+import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/resource/network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
