@@ -115,6 +115,7 @@ class _DashboardOverviewState extends State<DashboardOverview> with TickerProvid
       events: clientsByRegistrationDate(state.clients),
       startingDayOfWeek: StartingDayOfWeek.monday,
       initialCalendarFormat: CalendarFormat.week,
+      initialSelectedDay: _selectedDay,
       calendarStyle: CalendarStyle(
         selectedColor: Colors.deepPurple[400],
         todayColor: Colors.deepPurple[200],

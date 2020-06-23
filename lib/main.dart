@@ -9,6 +9,7 @@ import 'package:eventtracker/ui/export/ExportOverview.dart';
 import 'package:eventtracker/ui/login/login.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
@@ -18,6 +19,12 @@ import 'bloc/ClientBloc.dart';
 import 'bloc/UserBloc.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
         providers: [
           BlocProvider<ClientBloc>(
