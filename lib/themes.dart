@@ -30,3 +30,26 @@ final ThemeData darkTheme = ThemeData(
     backgroundColor: Colors.grey[850],
   ),
 );
+
+final kHintTextStyle = TextStyle(
+  color: Colors.deepPurple,
+  fontFamily: 'OpenSans',
+);
+
+final kLabelStyle = TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.bold,
+  fontFamily: 'OpenSans',
+);
+
+final kBoxDecorationStyle = BoxDecoration(
+  color: Colors.grey[200],
+  borderRadius: BorderRadius.circular(10.0),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black12,
+      blurRadius: 6.0,
+      offset: Offset(0, 2),
+    ),
+  ],
+);

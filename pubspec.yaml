@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^5.4.10
   pinput: ^0.2.4
   flutter_launcher_icons: ^0.7.5
+  device_preview: ^0.4.5
 
 # if you want to change the app icon - set path here and perform following command in terminal
 # flutter pub run flutter_launcher_icons:main

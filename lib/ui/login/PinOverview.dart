@@ -11,11 +11,10 @@ class PinPage extends StatefulWidget {
 
 class _PinPageState extends State<PinPage> {
   final TextEditingController _pinPutController = TextEditingController();
-  final FocusNode _pinPutFocusNode = FocusNode();
 
   BoxDecoration get _pinPutDecoration {
     return BoxDecoration(
-      border: Border.all(color: Colors.deepPurpleAccent),
+      color: Colors.deepPurple,
       borderRadius: BorderRadius.circular(15),
     );
   }
@@ -38,78 +37,164 @@ class _PinPageState extends State<PinPage> {
       ),
       body: Builder(
         builder: (context) {
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(
-                    color: Colors.white,
-                    margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.all(20),
-                    child: PinPut(
-                      fieldsCount: 5,
-                      onSubmit: (String pin) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MyHomePage()
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        margin: EdgeInsets.all(20),
+                        padding: EdgeInsets.all(10),
+                        child: PinPut(
+                          fieldsCount: 5,
+                          onSubmit: (String pin) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          },
+                          controller: _pinPutController,
+                          preFilledChar: "-",
+                          preFilledCharStyle: TextStyle(fontSize: 28, color: Colors.white),
+                          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+                          submittedFieldDecoration: _pinPutDecoration.copyWith(
+                              borderRadius: BorderRadius.circular(20)),
+                          selectedFieldDecoration: BoxDecoration(
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          followingFieldDecoration: _pinPutDecoration.copyWith(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                       ),
-                      focusNode: _pinPutFocusNode,
-                      controller: _pinPutController,
-                      submittedFieldDecoration: _pinPutDecoration.copyWith(
-                          borderRadius: BorderRadius.circular(20)),
-                      selectedFieldDecoration: _pinPutDecoration,
-                      followingFieldDecoration: _pinPutDecoration.copyWith(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.deepPurpleAccent.withOpacity(.5),
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-//                  SizedBox(height: 30),
-//                  Divider(),
-//                  Row(
-//                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                    children: <Widget>[
-//                      FlatButton(
-//                        child: Text('Focus'),
-//                        onPressed: () => _pinPutFocusNode.requestFocus(),
-//                      ),
-//                      FlatButton(
-//                        child: Text('Unfocus'),
-//                        onPressed: () => _pinPutFocusNode.unfocus(),
-//                      ),
-//                      FlatButton(
-//                        child: Text('Clear All'),
-//                        onPressed: () => _pinPutController.text = '',
-//                      ),
-//                    ],
-//                  ),
-                ],
+                ),
               ),
-            ),
+              Expanded(
+                child: Container(
+                  color: Colors.blue,
+                  child:  Column(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _pinNumber(1),
+                            _pinNumber(2),
+                            _pinNumber(3),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _pinNumber(4),
+                            _pinNumber(5),
+                            _pinNumber(6),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _pinNumber(7),
+                            _pinNumber(8),
+                            _pinNumber(9),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _emptyButton(),
+                            _pinNumber(0),
+                            _backButton(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
 
-  void _showSnackBar(String pin, BuildContext context) {
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 3),
-      content: Container(
-          height: 80.0,
-          child: Center(
-            child: Text(
-              'Pin Submitted. Value: $pin',
-              style: TextStyle(fontSize: 25.0),
+  Widget _pinNumber(int number) {
+    return Expanded(
+      child: Material(
+        child: InkWell(
+          onTap: (){
+            _pinPutController.text = _pinPutController.text + number.toString();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white
+              ),
             ),
-          )),
-      backgroundColor: Colors.deepPurpleAccent,
+            child: Center(child: Text(number.toString(), style: TextStyle(fontSize: 28), textAlign: TextAlign.center,)),
+          ),
+        ),
+      ),
     );
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(snackBar);
   }
+
+  Widget _emptyButton() {
+    return Expanded(
+      child: Material(
+        child: InkWell(
+          onTap: (){},
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.white
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _backButton() {
+    return Expanded(
+      child: Material(
+        child: InkWell(
+          onTap: (){
+            _pinPutController.text = _pinPutController.text.substring(0, _pinPutController.text.length -1);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.white
+              ),
+            ),
+            child: Center(child: Icon(Icons.backspace)),
+          ),
+        ),
+      ),
+    );
+  }
+
 }

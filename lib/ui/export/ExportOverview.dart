@@ -83,7 +83,7 @@ class _ExportPageState extends State<ExportPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ButtonTheme(
@@ -94,34 +94,6 @@ class _ExportPageState extends State<ExportPage> {
                           Icon(Icons.picture_as_pdf),
                           SizedBox(width: 20),
                           Text("Toon PDF")
-                        ],
-                      ),
-                      color: Colors.deepPurple,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      onPressed: !_isButtonEnabled
-                          ? null
-                          : () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ExportPdfPage(
-                                        clientId: _dropdownValue.id,
-                                        selectedPeriod: _selectedPeriod)),
-                              );
-                            },
-                    ),
-                  ),
-                  ButtonTheme(
-                    height:50,
-                    child: RaisedButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.format_list_numbered),
-                          SizedBox(width: 20),
-                          Text("Toon CSV"),
                         ],
                       ),
                       color: Colors.deepPurple,

@@ -1,10 +1,9 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:eventtracker/components/DelayedAnimation.dart';
 import 'package:eventtracker/main.dart';
+import 'package:eventtracker/ui/otp/OneTimePasswordOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'PinOverview.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -39,6 +38,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     return Scaffold(
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomCenter,
@@ -61,7 +61,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 repeatPauseDuration: Duration(seconds: 2),
                 startDelay: Duration(seconds: 1),
                 child: Material(
-//                    elevation: 8.0,
                     shape: CircleBorder(),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey[100],
@@ -69,9 +68,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       radius: 55.0,
                     )),
               ),
-              SizedBox(
-                height: 10.0,
-              ),
+            Spacer(),
               DelayedAnimation(
                 child: Text(
                   "Hallo",
@@ -92,9 +89,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
                 delay: delayedAmount + 2000,
               ),
-              SizedBox(
-                height: 30.0,
-              ),
+              Spacer(),
               DelayedAnimation(
                 child: Text(
                   "Je nieuw persoonlijke",
@@ -109,9 +104,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
                 delay: delayedAmount + 3000,
               ),
-              SizedBox(
-                height: 100.0,
-              ),
+              Spacer(),
               DelayedAnimation(
                 child: GestureDetector(
                   onTap: _launchURL,
@@ -121,16 +114,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                 delay: delayedAmount + 4000,
               ),
-              SizedBox(
-                height: 50.0,
-              ),
+              Spacer(),
               DelayedAnimation(
                 child: GestureDetector(
                   onTap: (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PinPage()
+                          builder: (context) => OneTimePasswordPage()
                       ),
                     );
                   },
@@ -143,6 +134,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
                 delay: delayedAmount + 5000,
               ),
+              Spacer()
             ],
           ),
         ),

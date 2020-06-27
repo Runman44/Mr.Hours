@@ -1,13 +1,15 @@
 import 'dart:async';
 
+import 'package:device_preview/device_preview.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/client/ClientCreate.dart';
 import 'package:eventtracker/ui/client/ClientOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
 import 'package:eventtracker/ui/export/ExportOverview.dart';
-import 'package:eventtracker/ui/login/login.dart';
+import 'package:eventtracker/ui/login/LoginOverview.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,10 +22,10 @@ import 'bloc/UserBloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+//  SystemChrome.setPreferredOrientations([
+//    DeviceOrientation.portraitUp,
+//    DeviceOrientation.portraitDown,
+//  ]);
 
   initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
         providers: [
@@ -39,7 +41,11 @@ void main() {
             ),
           ),
         ],
-        child: TimeApp(),
+        child:  DevicePreview(
+          enabled: !kReleaseMode,
+          builder: (context) => TimeApp(),
+        ),
+//    child: TimeApp(),
       )));
 }
 
@@ -59,6 +65,8 @@ class _TimeAppState extends State<TimeApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: DevicePreview.of(context).locale, // <--- Add the locale
+      builder: DevicePreview.appBuilder, // <--- Add the builder
       title: 'Tellow-Time',
       theme: lightTheme,
       home: LoginPage(),
@@ -103,6 +111,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ),
+        actions: <Widget>[
+          // action button
+          IconButton(
+            icon: Icon(Icons.power_settings_new),
+            onPressed: () {
+
+            },
+          ),
+        ],
       ),
       body: SpinCircleBottomBarHolder(
         bottomNavigationBar: SCBottomBarDetails(
