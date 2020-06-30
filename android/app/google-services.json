@@ -30,6 +30,13 @@
             {
               "client_id": "922259087637-3ar7n9jf6bt6t7om0pua141i14n7lsbo.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "922259087637-23jhia4h2014mbj1aon8mjkv8035s0bj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nl.mranderson.eventtracker"
+              }
             }
           ]
         }

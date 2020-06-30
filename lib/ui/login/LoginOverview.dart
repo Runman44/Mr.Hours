@@ -1,20 +1,22 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:eventtracker/components/DelayedAnimation.dart';
-import 'package:eventtracker/main.dart';
-import 'package:eventtracker/ui/otp/OneTimePasswordOverview.dart';
+import 'package:eventtracker/components/Loading.dart';
+import 'package:eventtracker/service/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final int delayedAmount = 500;
   double _scale;
   AnimationController _controller;
-
+  final AuthService _auth = AuthService();
+  bool loading = false;
 
   @override
   void initState() {
@@ -26,8 +28,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       lowerBound: 0.0,
       upperBound: 0.1,
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
     super.initState();
   }
 
@@ -36,7 +38,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     final color = Colors.white;
     _scale = 1 - _controller.value;
 
-    return Scaffold(
+    return  Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
@@ -49,10 +51,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             ],
           ),
         ),
-        child: Center(
+        child: loading? SpinKitChasingDots(
+          color: Colors.white,
+          size: 40.0,
+        ) : Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Spacer(),
               AvatarGlow(
                 endRadius: 90,
                 duration: Duration(seconds: 2),
@@ -68,7 +74,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       radius: 55.0,
                     )),
               ),
-            Spacer(),
+              Spacer(),
               DelayedAnimation(
                 child: Text(
                   "Hallo",
@@ -81,7 +87,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               ),
               DelayedAnimation(
                 child: Text(
-                  "Wij zijn Tellow",
+                  "Wij zijn Pyre",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 35.0,
@@ -106,33 +112,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               ),
               Spacer(),
               DelayedAnimation(
-                child: GestureDetector(
-                  onTap: _launchURL,
-                  child: Transform.scale(
-                    scale: _scale,
-                    child: _animatedButtonUI),
-                  ),
+                child: Transform.scale(scale: _scale, child: _animatedButtonUI),
                 delay: delayedAmount + 4000,
-              ),
-              Spacer(),
-              DelayedAnimation(
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OneTimePasswordPage()
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "Ik heb al een account",
-                    style: TextStyle(
-                        fontSize: 20.0,
-                        color: color),
-                  ),
-                ),
-                delay: delayedAmount + 5000,
               ),
               Spacer()
             ],
@@ -142,31 +123,45 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     );
   }
 
-  Widget get _animatedButtonUI => Container(
-    height: 60,
-    width: 270,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(100.0),
-      color: Colors.white,
-    ),
-    child: Center(
-      child: Text(
-        'Nieuw bij Tellow',
-        style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.purple,
+  Widget get _animatedButtonUI => OutlineButton(
+        splashColor: Colors.grey,
+        onPressed: _launchURL,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        highlightElevation: 0,
+        borderSide: BorderSide(color: Colors.white),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(
+                  image: AssetImage("assets/images/google_logo.png"),
+                  height: 35.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  'Sign in with Google',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   _launchURL() async {
-    const url = 'https://app.tellow.nl/registreer';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+    setState(() {
+      loading = true;
+    });
+    dynamic results = await _auth.signInWithGoogle();
+    if (results == null) {
+      setState(() {
+        loading = false;
+      });
     }
   }
 }

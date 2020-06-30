@@ -1,5 +1,6 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/components/Bullet.dart';
+import 'package:eventtracker/components/Loading.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class _DashboardOverviewState extends State<DashboardOverview> with TickerProvid
       if (state is DashboardLoadInProgress) {
         return Container(
             alignment: Alignment.center,
-            child: CircularProgressIndicator());
+            child: Loading());
       } else if (state is DashboardLoadSuccess) {
         return Column(
           mainAxisSize: MainAxisSize.max,
