@@ -1,4 +1,3 @@
-import 'package:eventtracker/service/auth.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
@@ -29,8 +28,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     "Instellingen"
   ];
 
-  final AuthService _auth = AuthService();
-
   @override
   Widget build(BuildContext context) {
 
@@ -47,18 +44,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        actions: <Widget>[
-          // action button
-          Visibility(
-            visible: false,
-            child: IconButton(
-              icon: Icon(Icons.power_settings_new),
-              onPressed: () async {
-                await _auth.signOutGoogle();
-              },
-            ),
-          ),
-        ],
       ),
       body: SpinCircleBottomBarHolder(
         bottomNavigationBar: SCBottomBarDetails(

@@ -1,13 +1,7 @@
-import 'dart:async';
-
-import 'package:device_preview/device_preview.dart';
-import 'package:eventtracker/service/auth.dart';
 import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/HomeOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
-import 'package:eventtracker/ui/login/AuthenticationWrapper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
@@ -62,18 +56,15 @@ class _TimeAppState extends State<TimeApp> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<User>.value(
-      value: AuthService().user,
-      child: MaterialApp(
+    return MaterialApp(
 //          locale: DevicePreview.of(context).locale,
 //           <--- Add the locale
 //          builder: DevicePreview.appBuilder,
-          // <--- Add the builder
-          title: 'Pyre',
-          theme: lightTheme,
+        // <--- Add the builder
+        title: 'Pyre',
+        theme: lightTheme,
 //          home: AuthenticationWrapper()),
-          home: MyHomePage()),
-    );
+        home: MyHomePage());
   }
 }
 
