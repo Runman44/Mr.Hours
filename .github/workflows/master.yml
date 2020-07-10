@@ -15,9 +15,13 @@ jobs:
       with:
         java-version: '12.x'
     - name: Install Flutter
-      uses: subosito/flutter-action@v1.3.2
+      uses: subosito/flutter-action@v1
+      with:
+        channel: 'stable'
     - name: Install dependencies
       run: flutter pub get
+    - name: Tests
+      run: flutter test
     - run: flutter build apk --debug
     - name: Upload APK
       uses: actions/upload-artifact@master
