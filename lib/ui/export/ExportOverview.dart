@@ -29,6 +29,7 @@ class _ExportPageState extends State<ExportPage> {
     _selectedPeriod = DatePeriod(selectedPeriodStart, selectedPeriodEnd);
   }
 
+  //TODO only rebuild whats needed to be rebuild.
   @override
   Widget build(BuildContext context) {
     ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
@@ -59,7 +60,7 @@ class _ExportPageState extends State<ExportPage> {
                   });
                 },
                 underline: Container(),
-                items: clientBloc.state.clients
+                items: (clientBloc.state as ClientsLoadSuccess).clients
                     .map<DropdownMenuItem<Client>>((Client value) {
                   return DropdownMenuItem<Client>(
                     value: value,
@@ -96,7 +97,7 @@ class _ExportPageState extends State<ExportPage> {
                           Text("Toon PDF")
                         ],
                       ),
-                      color: Colors.deepPurple,
+                      color: Theme.of(context).accentColor,
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

@@ -1,6 +1,4 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
-import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/ui/project/ProjectEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -12,12 +10,12 @@ class ClientCreator extends StatefulWidget {
 }
 
 class _ClientCreatorState extends State<ClientCreator> {
-  TextEditingController _nameController;
+  TextEditingController _nameController = new TextEditingController();
   Color _colour;
   FocusNode _focus;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameProjectController;
-  MoneyMaskedTextController _rateController;
+  TextEditingController _nameProjectController = new TextEditingController();
+  MoneyMaskedTextController _rateController = new MoneyMaskedTextController();
   bool _isSwitched = false;
 
   @override
@@ -60,99 +58,92 @@ class _ClientCreatorState extends State<ClientCreator> {
               bool valid = _formKey.currentState.validate();
               if (!valid) return;
 
-                clientBloc.add(CreateClient(
-                    _nameController.text.trim(),
-                    _colour,
-                    _nameProjectController.text.trim(),
-                    _rateController.numberValue,
-                    _isSwitched));
+              clientBloc.add(CreateClient(
+                  _nameController.text.trim(),
+                  _colour,
+                  _nameProjectController.text.trim(),
+                  _rateController.numberValue,
+                  _isSwitched));
               Navigator.pop(context);
             },
           ),
         ],
       ),
-      body: BlocBuilder<ClientBloc, ClientState>(
-        bloc: clientBloc,
-        builder: (context, clientState) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                    child: Text(
-                      "Vul een naam in",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _nameController,
-                    validator: (String value) =>
-                        value.trim().isEmpty ? "Vul een naam in" : null,
-                    decoration: InputDecoration(hintText: "Client naam"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                    child: Text(
-                      "Kies een kleur",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  MaterialColorPicker(
-                    physics: const NeverScrollableScrollPhysics(),
-                    selectedColor: _colour,
-                    shrinkWrap: true,
-                    onColorChange: (Color color) => _colour = color,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                    child: Text(
-                      "Project",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                    child: TextFormField(
-                      controller: _nameProjectController,
-                      validator: (String value) =>
-                      value.trim().isEmpty ? "Vul een naam in" : null,
-                      decoration: InputDecoration(hintText: "Project naam"),
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _rateController,
-                    keyboardType: TextInputType.number,
-                    validator: (String value) =>
-                    value.trim().isEmpty ? "Vul een rate in" : null,
-                    decoration: InputDecoration(hintText: "Uurloon"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Factureerbaar"),
-                        Switch(
-                            value: _isSwitched,
-                            onChanged: (value) {
-                              setState(() {
-                                _isSwitched = value;
-                              });
-                            }),
-                      ],
-                    ),
-                  ),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                child: Text(
+                  "Vul een naam in",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-          );
-        },
+              TextFormField(
+                controller: _nameController,
+                validator: (String value) =>
+                    value.trim().isEmpty ? "Vul een naam in" : null,
+                decoration: InputDecoration(hintText: "Client naam"),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
+                child: Text(
+                  "Kies een kleur",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              MaterialColorPicker(
+                physics: const NeverScrollableScrollPhysics(),
+                selectedColor: _colour,
+                shrinkWrap: true,
+                onColorChange: (Color color) => _colour = color,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                child: Text(
+                  "Project",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                child: TextFormField(
+                  controller: _nameProjectController,
+                  validator: (String value) =>
+                      value.trim().isEmpty ? "Vul een naam in" : null,
+                  decoration: InputDecoration(hintText: "Project naam"),
+                ),
+              ),
+              TextFormField(
+                controller: _rateController,
+                keyboardType: TextInputType.number,
+                validator: (String value) =>
+                    value.trim().isEmpty ? "Vul een rate in" : null,
+                decoration: InputDecoration(hintText: "Uurloon"),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Factureerbaar"),
+                    Switch(
+                        value: _isSwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            _isSwitched = value;
+                          });
+                        }),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

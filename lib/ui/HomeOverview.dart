@@ -1,8 +1,6 @@
-import 'package:eventtracker/bloc/UserBloc.dart';
 import 'package:eventtracker/service/auth.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
 import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
 
@@ -35,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    UserBloc userBloc = BlocProvider.of<UserBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -52,11 +49,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         actions: <Widget>[
           // action button
-          IconButton(
-            icon: Icon(Icons.power_settings_new),
-            onPressed: () async {
-              await _auth.signOutGoogle();
-            },
+          Visibility(
+            visible: false,
+            child: IconButton(
+              icon: Icon(Icons.power_settings_new),
+              onPressed: () async {
+                await _auth.signOutGoogle();
+              },
+            ),
           ),
         ],
       ),
@@ -135,10 +135,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                           builder: (context) => RegistrationEditor(
-                            client: null,
-                            project: null,
+                            clientId: null,
+                            clientName: null,
+                            projectId: null,
+                            projectName: "",
                             registration: null,
-                            pickedDate: DateTime.now(),
+                            startDate: DateTime.now(),
+                            endDate: DateTime.now(),
                           )),
                     );
                   }),
@@ -149,14 +152,5 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: _children[_currentIndex],
       ),
     );
-  }
-
-  String getWelcomeMessage(UserState state) {
-    if (state is UserLoadSuccess) {
-      var text = state.user?.firstName;
-      return "Welkom $text";
-    } else {
-      return "Welkom";
-    }
   }
 }

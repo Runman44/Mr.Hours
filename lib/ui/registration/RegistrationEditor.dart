@@ -1,21 +1,30 @@
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
+import 'package:eventtracker/bloc/RegistrationBloc.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class RegistrationEditor extends StatefulWidget {
-  final Client client;
-  final Project project;
-  final Registration registration;
-  final DateTime pickedDate;
+  final int clientId;
+  final int projectId;
+  final String projectName;
+  final String clientName;
+  final int registration;
+  final DateTime startDate;
+  final DateTime endDate;
 
   RegistrationEditor(
       {Key key,
-      @required this.client,
-      @required this.project,
+      @required this.clientId,
+      @required this.projectId,
+      @required this.projectName,
+      @required this.clientName,
       @required this.registration,
-      @required this.pickedDate})
+      @required this.startDate,
+      @required this.endDate
+      })
       : super(key: key);
 
   @override
@@ -27,19 +36,19 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
   final _formKey = GlobalKey<FormState>();
   Client _dropdownValue;
   Project _dropdownValue2;
-  DateTime _date;
-  TimeOfDay _startTime;
-  TimeOfDay _endTime;
+  DateTime _startDateTime;
+  DateTime _endDateTime;
+  int _breakTime;
 
   @override
   void initState() {
     super.initState();
     _focus = FocusNode();
-    _dropdownValue = widget.client;
-    _dropdownValue2 = widget.project;
-    _date = widget.registration?.date ?? widget.pickedDate;
-    _startTime =  widget.registration?.startTime ?? TimeOfDay.now();
-    _endTime = widget.registration?.endTime ?? TimeOfDay.now();
+//    _dropdownValue = widget.client;
+//    _dropdownValue2 = widget.project;
+    _startDateTime = widget.startDate;
+    _endDateTime = widget.endDate;
+    _breakTime = 0;
   }
 
   @override
@@ -48,57 +57,79 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
     super.dispose();
   }
 
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _date,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != _date)
-      setState(() {
-        _date = picked;
-      });
-  }
-
-  Future<Null> _selectStartTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime:_startTime, );
-    if (picked != null && picked != _startTime)
-      setState(() {
-        _startTime = picked;
-      });
-  }
-
-  Future<Null> _selectEndTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime:_endTime);
-    if (picked != null && picked != _endTime)
-      setState(() {
-        _endTime = picked;
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
-    ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
+    //TODO other bloc!
+    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
+    final RegistrationBloc registrationBloc = BlocProvider.of<RegistrationBloc>(context);
 
     var projects = _dropdownValue?.projects ?? [];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.registration == null ? "Uren toevoegen" : "Uren wijzigen",
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+    return BlocBuilder<RegistrationBloc, RegistrationState>(
+      builder: (BuildContext context, RegistrationState registrationState) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.registration == null
+                  ? "Uren toevoegen"
+                  : "Uren wijzigen",
             ),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).accentColor
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              // action button
+              Visibility(
+                visible: widget.registration != null,
+                child: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    registrationBloc.add(
+                      RemoveRegistration(widget.registration),
+                    );
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.check),
+                onPressed: () async {
+
+                  bool valid = _formKey.currentState.validate();
+                  if (!valid) return;
+                  if (widget.clientId != null &&
+                      widget.projectId != null &&
+                      widget.registration != null) {
+                    registrationBloc.add(EditRegistration(
+                        widget.registration,
+                        widget.clientId,
+                        widget.projectId,
+                        _startDateTime,
+                        _endDateTime,
+                        0));
+                  } else {
+                    registrationBloc.add(CreateRegistration(
+                        _dropdownValue,
+                        _dropdownValue2,
+                        _startDateTime,
+                        _endDateTime,
+                        0,
+                        _dropdownValue2.rate,
+                        _dropdownValue2.billable));
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
-        ),
-      ),
-      body: BlocBuilder<ClientBloc, ClientState>(
-        bloc: clientBloc,
-        builder: (context, clientState) {
-          return Padding(
+          body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
@@ -106,23 +137,27 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                 children: [
                   Text(
                     "Kies een opdrachtgever",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: DropdownButton(
                       isExpanded: true,
-                      disabledHint: Text(widget.client?.name ?? ""),
+                      disabledHint: Text(widget.clientName ?? ""),
                       hint: Text("Selecteer een opdrachtgever"),
                       value: _dropdownValue,
                       icon: Icon(Icons.arrow_drop_down),
                       style: TextStyle(color: Colors.deepPurple),
-                      onChanged: widget.client == null ?  (newValue) {
-                        setState(() {
-                          _dropdownValue = newValue;
-                        });
-                      } : null,
-                      items: clientBloc.state.clients
+                      onChanged: widget.clientId == null
+                          ? (newValue) {
+                              setState(() {
+                                _dropdownValue = newValue;
+                              });
+                            }
+                          : null,
+                      items: (clientBloc.state as ClientsLoadSuccess)
+                          .clients
                           .map<DropdownMenuItem<Client>>((Client value) {
                         return DropdownMenuItem<Client>(
                           value: value,
@@ -133,22 +168,25 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                   ),
                   Text(
                     "Kies een project",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: DropdownButton(
                       hint: Text("Selecteer een project"),
-                      disabledHint: Text(widget.project?.name ?? ""),
+                      disabledHint: Text(widget.projectName ?? ""),
                       value: _dropdownValue2,
                       icon: Icon(Icons.arrow_drop_down),
                       isExpanded: true,
                       style: TextStyle(color: Colors.deepPurple),
-                      onChanged: widget.project == null ?  (newValue) {
-                        setState(() {
-                          _dropdownValue2 = newValue;
-                        });
-                      } : null,
+                      onChanged: widget.projectId == null
+                          ? (newValue) {
+                              setState(() {
+                                _dropdownValue2 = newValue;
+                              });
+                            }
+                          : null,
                       items: projects
                           .map<DropdownMenuItem<Project>>((Project value) {
                         return DropdownMenuItem<Project>(
@@ -159,141 +197,115 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                     ),
                   ),
                   Text(
-                    "Kies een datum",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    "Wanneer ben je begonnen?",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: FlatButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      color: Colors.white,
-                      onPressed: () {
-                        _selectDate(context);
-                      },
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Icon(Icons.calendar_today),
-                          ),
-                          Text(formatDate(_date)),
-                        ],
-                      ),
-                    ),
+//                    Padding(
+//                      padding: const EdgeInsets.all(16),
+//                      child: FlatButton(
+//                        shape: RoundedRectangleBorder(
+//                            borderRadius: BorderRadius.circular(5.0)),
+//                        color: Colors.white,
+//                        onPressed: () {
+//                          _selectStartDate(context);
+//                        },
+//                        child: Row(
+//                          children: [
+//                            Padding(
+//                              padding: const EdgeInsets.all(16.0),
+//                              child: Icon(Icons.calendar_today),
+//                            ),
+//                            Text(_startDateTime.toIso8601String()),
+//                          ],
+//                        ),
+//                      ),
+//                    ),
+                  DateTimeField(
+                    format: DateFormat("yyyy-MM-dd HH:mm"),
+                    onShowPicker: (context, currentValue) async {
+                      final date = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          initialDate: _startDateTime ?? DateTime.now(),
+                          lastDate: DateTime(2100));
+                      if (date != null) {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.fromDateTime(
+                              _startDateTime ?? DateTime.now()),
+                        );
+                        return DateTimeField.combine(date, time);
+                      } else {
+                        return _startDateTime;
+                      }
+                    },
+                    autovalidate: true,
+                    validator: (date) => date == null ? 'Invalid date' : null,
+                    initialValue: _startDateTime,
+                    onChanged: (date) => setState(() {
+                      _startDateTime = date;
+                    }),
+                    resetIcon: Icon(Icons.delete),
                   ),
                   Text(
-                    "Kies een starttijd",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    "Wanneer ben je gestopt?",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: FlatButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      color: Colors.white,
-                      onPressed: () {
-                        _selectStartTime(context);
-                      },
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Icon(Icons.access_time),
-                          ),
-                          Text(_startTime.format(context)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Kies een eindtijd",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: FlatButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      color: Colors.white,
-                      onPressed: () {
-                        _selectEndTime(context);
-                      },
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Icon(Icons.access_time),
-                          ),
-                          Text(_endTime.format(context)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Visibility(
-                        visible: widget.registration != null,
-                        child: RaisedButton(
-                          child: Text("Uren Verwijderen"),
-                          color: Colors.red,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            clientBloc.add(
-                              DeleteRegistration(widget.client, widget.project, widget.registration.id),
-                            );
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                      RaisedButton(
-                        child: Text("Uren Opslaan"),
-                        color: Colors.deepPurple,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          bool valid = _formKey.currentState.validate();
-                          if (!valid) return;
-
-                          if (widget.client != null && widget.project != null && widget.registration != null) {
-                            clientBloc.add(EditRegistration(
-                                widget.client,
-                                widget.project,
-                                widget.registration,
-                                _date,
-                                _startTime,
-                                0,
-                                _endTime,
-                                widget.project.rate,
-                                widget.project.billable));
-                          } else {
-                            clientBloc.add(AddRegistration(
-                                _dropdownValue,
-                                _dropdownValue2,
-                                _date,
-                                _startTime,
-                                0,
-                                _endTime,
-                                _dropdownValue2.rate,
-                                _dropdownValue2.billable));
-                          }
-
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
+//                    Padding(
+//                      padding: const EdgeInsets.all(16),
+//                      child: FlatButton(
+//                        shape: RoundedRectangleBorder(
+//                            borderRadius: BorderRadius.circular(5.0)),
+//                        color: Colors.white,
+//                        onPressed: () {
+////                          _selectStartTime(context);
+//                        },
+//                        child: Row(
+//                          children: [
+//                            Padding(
+//                              padding: const EdgeInsets.all(16.0),
+//                              child: Icon(Icons.calendar_today),
+//                            ),
+////                            Text(_startTime.format(context)),
+//                          ],
+//                        ),
+//                      ),
+//                    ),
+                  DateTimeField(
+                    format: DateFormat("yyyy-MM-dd HH:mm"),
+                    onShowPicker: (context, currentValue) async {
+                      final date = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          initialDate: _endDateTime ?? DateTime.now(),
+                          lastDate: DateTime(2100));
+                      if (date != null) {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.fromDateTime(
+                              _endDateTime ?? DateTime.now()),
+                        );
+                        return DateTimeField.combine(date, time);
+                      } else {
+                        return _endDateTime;
+                      }
+                    },
+                    autovalidate: true,
+                    validator: (date) => date == null ? 'Invalid date' : null,
+                    initialValue: _endDateTime,
+                    onChanged: (date) => setState(() {
+                      _endDateTime = date;
+                    }),
+                    resetIcon: Icon(Icons.delete),
                   ),
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
-  }
-
-  String formatDate(DateTime dateTime) {
-    var formatter = new DateFormat('dd-MM-yyyy');
-    return formatter.format(dateTime);
   }
 }

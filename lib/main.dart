@@ -1,22 +1,27 @@
 import 'dart:async';
 
 import 'package:device_preview/device_preview.dart';
-import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/service/auth.dart';
+import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
+import 'package:eventtracker/ui/HomeOverview.dart';
+import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
 import 'package:eventtracker/ui/login/AuthenticationWrapper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/ClientBloc.dart';
-import 'bloc/UserBloc.dart';
+import 'bloc/RegistrationBloc.dart';
+import 'model/model.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final DatabaseService data = await DatabaseService.open();
+
 //  SystemChrome.setPreferredOrientations([
 //    DeviceOrientation.portraitUp,
 //    DeviceOrientation.portraitDown,
@@ -25,22 +30,20 @@ void main() {
   initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
         providers: [
           BlocProvider<ClientBloc>(
-            create: (_) => ClientBloc(),
+            create: (_) => ClientBloc(data),
           ),
-          BlocProvider<UserBloc>(
-            create: (_) => UserBloc(),
+          BlocProvider<RegistrationBloc>(
+            create: (context) => RegistrationBloc(data, BlocProvider.of<ClientBloc>(context)),
           ),
           BlocProvider<DashboardBloc>(
-            create: (context) => DashboardBloc(
-              clientBloc: BlocProvider.of<ClientBloc>(context),
-            ),
+            create: (context) => DashboardBloc(data, BlocProvider.of<RegistrationBloc>(context)),
           ),
         ],
-        child: DevicePreview(
-          enabled: !kReleaseMode,
-          builder: (context) => TimeApp(),
-        ),
-//    child: TimeApp(),
+//        child: DevicePreview(
+//          enabled: !kReleaseMode,
+//          builder: (context) => TimeApp(),
+//        ),
+    child: TimeApp(),
       )));
 }
 
@@ -53,82 +56,25 @@ class _TimeAppState extends State<TimeApp> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserBloc>(context).add(LoadUser());
-    BlocProvider.of<ClientBloc>(context).add(LoadClient());
+    BlocProvider.of<ClientBloc>(context).add(LoadClients());
+    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(DateTime.now().subtract(Duration(days: 4)), DateTime.now().add(Duration(days: 4)))));
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<FirebaseUser>.value(
+    return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
-          locale: DevicePreview.of(context).locale,
-          // <--- Add the locale
-          builder: DevicePreview.appBuilder,
+//          locale: DevicePreview.of(context).locale,
+//           <--- Add the locale
+//          builder: DevicePreview.appBuilder,
           // <--- Add the builder
           title: 'Pyre',
           theme: lightTheme,
-          home: AuthenticationWrapper()),
+//          home: AuthenticationWrapper()),
+          home: MyHomePage()),
     );
   }
 }
 
 
-abstract class DashboardEvent {
-  const DashboardEvent();
-}
-
-class HoursUpdated extends DashboardEvent {
-  final List<Client> clients;
-
-  const HoursUpdated(this.clients);
-}
-
-class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  final ClientBloc clientBloc;
-  StreamSubscription dataSubscription;
-
-  DashboardBloc({@required this.clientBloc}) {
-    dataSubscription = clientBloc.listen((state) {
-      if (clientBloc.state.clients.isNotEmpty) {
-        add(HoursUpdated(clientBloc.state.clients));
-      }
-    });
-  }
-
-  @override
-  DashboardState get initialState {
-    return clientBloc.state.clients.isNotEmpty
-        ? DashboardLoadSuccess(
-            clientBloc.state.clients,
-          )
-        : DashboardLoadInProgress();
-  }
-
-  @override
-  Stream<DashboardState> mapEventToState(DashboardEvent event) async* {
-    if (clientBloc.state.clients.isNotEmpty) {
-      yield DashboardLoadSuccess(
-        clientBloc.state.clients,
-      );
-    }
-  }
-
-  @override
-  Future<void> close() {
-    dataSubscription.cancel();
-    return super.close();
-  }
-}
-
-abstract class DashboardState {
-  const DashboardState();
-}
-
-class DashboardLoadInProgress extends DashboardState {}
-
-class DashboardLoadSuccess extends DashboardState {
-  final List<Client> clients;
-
-  DashboardLoadSuccess(this.clients);
-}

@@ -1,60 +1,42 @@
-import 'package:eventtracker/resource/network.dart';
 import 'package:flutter/material.dart';
-import 'package:time/time.dart';
-import '../extention.dart';
 
 class User {
 
-  int id;
+  String id;
   String email;
-  String firstName;
-  String middleName;
-  String lastName;
-  int administrationId;
+  String name;
 
-  User();
+  User({this.id, this.email, this.name});
 
-  User.fromDto(UserDto userDto) {
-    this.id = userDto.id;
-    this.email = userDto.email;
-    this.firstName = userDto.firstName;
-    this.lastName = userDto.lastName;
-    this.administrationId = userDto.administrationId;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+    };
   }
 }
 
 class Client {
 
-  String id;
+  int id;
   String name;
   Color color;
   List<Project> projects = [];
 
-  Client();
-
-  Client.fromDto(ClientDto clientDto) {
-    this.id = clientDto.id;
-    this.name = clientDto.name;
-    this.color = HexColor.fromHex(clientDto.hex);
-  }
+  Client({this.id, this.name, this.color, this.projects});
 }
 
 class Project {
 
-  String id;
+  int id;
   String name;
   int rate = 0;
   bool billable = false;
+  int clientId;
   List<Registration> registrations = [];
 
-  Project();
-
-  Project.fromDto(ProjectDto projectDto) {
-    this.id = projectDto.id;
-    this.name = projectDto.name;
-    this.rate = projectDto.rate;
-    this.billable = projectDto.billable;
-  }
+  Project({this.id, this.name, this.rate, this.billable, this.clientId, this.registrations});
 
   double centsToDouble() {
     return rate / 100;
@@ -63,24 +45,13 @@ class Project {
 
 class Registration {
 
-  String id;
-  String description;
-  DateTime date;
-  int minutesWorked;
-  TimeOfDay startTime;
+  int id;
+  DateTime startDateTime;
+  DateTime endDateTime;
   int breakTime;
-  TimeOfDay endTime;
+  int projectId;
 
-  Registration();
-
-  Registration.fromDto(RegistrationDto registrationDto) {
-    this.id = registrationDto.id;
-    this.date = registrationDto.date;
-    this.minutesWorked = registrationDto.minutes;
-    this.startTime = minutesToTimeOfDay(registrationDto.startTime);
-    this.breakTime = registrationDto.breakz;
-    this.endTime = minutesToTimeOfDay(registrationDto.endTime);
-  }
+  Registration({this.id, this.startDateTime, this.endDateTime, this.breakTime, this.projectId});
 
   TimeOfDay minutesToTimeOfDay(int minutes) {
       Duration duration = Duration(minutes: minutes);
@@ -90,17 +61,33 @@ class Registration {
 
 }
 
-class Booking {
+class DashboardItem {
 
-  Client client;
-  Project project;
-  Registration registration;
+  int registrationId;
+  int projectId;
+  int clientId;
+  String clientName;
+  Color clientColor;
+  String projectName;
+  DateTime startDateTime;
+  DateTime endDateTime;
+  int breakTime;
 
-  Booking(this.client, this.project, this.registration);
+  DashboardItem({this.registrationId, this.projectId, this.clientId, this.clientName, this.clientColor, this.projectName, this.startDateTime, this.endDateTime, this.breakTime});
 
   String minutesToUIString() {
-    Duration duration = Duration(minutes: registration.minutesWorked);
+    var inMinutes = endDateTime
+        .difference(startDateTime)
+        .inMinutes;
+    Duration duration = Duration(minutes: inMinutes);
     List<String> parts = duration.toString().split(':');
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
   }
+
+  TimeOfDay minutesToTimeOfDay(int minutes) {
+    Duration duration = Duration(minutes: minutes);
+    List<String> parts = duration.toString().split(':');
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
 }

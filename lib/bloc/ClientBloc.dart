@@ -1,9 +1,7 @@
-
 import 'dart:ui';
 
 import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/resource/network.dart';
+import 'package:eventtracker/service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +9,7 @@ abstract class ClientsEvent {
   const ClientsEvent();
 }
 
-class LoadClient extends ClientsEvent {}
+class LoadClients extends ClientsEvent {}
 
 class CreateClient extends ClientsEvent {
   final String name;
@@ -20,11 +18,12 @@ class CreateClient extends ClientsEvent {
   final double rate;
   final bool billable;
 
-  const CreateClient(this.name, this.color, this.projectName, this.rate, this.billable);
+  const CreateClient(
+      this.name, this.color, this.projectName, this.rate, this.billable);
 }
 
 class EditClient extends ClientsEvent {
-  final String id;
+  final int id;
   final String name;
   final Color color;
   final List<Project> projects;
@@ -33,7 +32,7 @@ class EditClient extends ClientsEvent {
 }
 
 class DeleteClient extends ClientsEvent {
-  final String id;
+  final int id;
 
   const DeleteClient(this.id);
 }
@@ -49,265 +48,238 @@ class AddProject extends ClientsEvent {
 
 class EditProject extends ClientsEvent {
   final Client client;
-  final String projectId;
+  final int projectId;
   final String name;
   final double rate;
   final bool billable;
+  final List<Registration> registrations;
 
-  const EditProject(this.client, this.projectId, this.name, this.rate, this.billable);
+  const EditProject(this.client, this.projectId, this.name, this.rate, this.billable, this.registrations);
 }
 
 class DeleteProject extends ClientsEvent {
   final Client client;
-  final String projectId;
+  final int projectId;
 
   const DeleteProject(this.client, this.projectId);
 }
 
-class AddRegistration extends ClientsEvent {
-  final Client client;
-  final Project project;
-  final DateTime date;
-  final TimeOfDay startTime;
-  final int breakTime;
-  final TimeOfDay endTime;
-  final int rate;
-  final bool billable;
-
-  const AddRegistration(this.client, this.project, this.date, this.startTime, this.breakTime, this.endTime, this.rate, this.billable);
-}
-
-class EditRegistration extends ClientsEvent {
-  final Client client;
-  final Project project;
-  final Registration registration;
-  final DateTime date;
-  final TimeOfDay startTime;
-  final int breakTime;
-  final TimeOfDay endTime;
-  final int rate;
-  final bool billable;
-
-  const EditRegistration(this.client, this.project, this.registration, this.date, this.startTime, this.breakTime, this.endTime, this.rate, this.billable);
-}
-
-class DeleteRegistration extends ClientsEvent {
-  final Client client;
-  final Project project;
-  final String registrationId;
-
-  const DeleteRegistration(this.client, this.project, this.registrationId);
-}
-
 class ClientBloc extends Bloc<ClientsEvent, ClientState> {
+  final DatabaseService data;
+
+  ClientBloc(this.data);
+
   @override
-  ClientState get initialState => ClientState.initial();
+  ClientState get initialState => ClientsLoadInProgress();
 
   @override
   Stream<ClientState> mapEventToState(ClientsEvent event) async* {
-    if (event is LoadClient) {
-      List<ClientDto> clientsDto = await getAllClients();
-      var clients = clientsDto.where((client) => client.deletedOn == null).toList();
-
-      var uiClients = clients.map((e) => Client.fromDto(e)).toList();
-
-      print("LoadClient start");
-      for (Client client in uiClients) {
-        var projectsDto = await getAllProjectsByClient(client.id);
-        var projects = projectsDto.where((project) => project.deletedOn == null).toList();
-        var uiProjects = projects.map((e) => Project.fromDto(e)).toList();
-
-        for (Project project in uiProjects) {
-          var registrationsDto = await getAllRegistrationsByProduct(project.id);
-          var registrations = registrationsDto.where((registration) => registration.deletedOn == null).toList();
-          var uiRegistrations = registrations.map((e) => Registration.fromDto(e)).toList();
-
-          project.registrations = uiRegistrations;
-          client.projects = uiProjects;
-        }
+    if (event is LoadClients) {
+      yield* _fetchClients();
+    } else if (event is CreateClient) {
+      if (state is ClientsLoadSuccess) {
+        var amountInCents = (event.rate * 100).toInt();
+        Client newClient = await data.insertClient(event.name, event.color);
+        Project newProject = await data.insertProject(
+            newClient.id, event.projectName, event.billable, amountInCents);
+        newClient.projects.add(newProject);
+        List<Client> clients = (state as ClientsLoadSuccess).clients;
+        clients.add(newClient);
+        yield ClientsLoadSuccess(clients);
       }
-      print("LoadClient end");
-      yield ClientState(uiClients);
-    }
-    else if (event is CreateClient) {
-      ClientDto newClient = await sendClient(event.name, event.color);
-      Client uiClient = Client.fromDto(newClient);
+    } else if (event is EditClient) {
 
+      if (state is ClientsLoadSuccess) {
+        await data.editClient(event.id, event.name, event.color);
+
+        List<Client> clients = (state as ClientsLoadSuccess).clients.map((client) {
+          if (client.id == event.id)
+            return Client(
+                id: event.id,
+                name: event.name,
+                color: event.color,
+                projects: event.projects);
+          return client;
+        }).toList();
+
+        yield ClientsLoadSuccess(clients);
+      }
+
+    } else if (event is DeleteClient) {
+
+      if (state is ClientsLoadSuccess) {
+        await data.deleteClient(event.id);
+        var clients = (state as ClientsLoadSuccess).clients;
+        clients.removeWhere((element) => element.id == event.id);
+        yield ClientsLoadSuccess(clients);
+      }
+    } else if (event is AddProject) {
       var amountInCents = (event.rate * 100).toInt();
+      Project newProject  = await data.insertProject(event.client.id, event.name, event.billable, amountInCents);
 
-      ProjectDto newProject = await sendProject(event.projectName, event.billable, amountInCents, uiClient.id);
-      Project uiProject = Project.fromDto(newProject);
+      var client = event.client;
+      client.projects.add(newProject);
 
-      uiClient.projects.add(uiProject);
-
-      List<Client> clients = state.clients;
-      clients.add(uiClient);
-      yield ClientState(clients);
-    }
-    else if (event is EditClient) {
-      ClientDto newClient = await updateClient(event.id, event.name, event.color);
-      Client uiClient = Client.fromDto(newClient);
-      uiClient.projects = event.projects;
-
-      List<Client> clients = state.clients.map((client) {
-        if (client.id == event.id) return uiClient;
-        return client;
+      List<Client> clients = (state as ClientsLoadSuccess).clients.map((oldClient) {
+        if (oldClient.id == client.id) return client;
+        return oldClient;
       }).toList();
-      yield ClientState(clients);
+
+      yield ClientsLoadSuccess(clients);
     }
-    else if (event is DeleteClient) {
-      ClientDto deletedClientDto = await deleteClient(event.id);
-      Client deletedClient = Client.fromDto(deletedClientDto);
-
-      var clients = state.clients;
-
-      clients.removeWhere((element) => element.id == deletedClient.id);
-
-      yield ClientState(clients);
-    }
-    else if (event is AddProject) {
+     else if (event is EditProject) {
 
       var amountInCents = (event.rate * 100).toInt();
 
-       ProjectDto newProject = await sendProject(event.name, event.billable, amountInCents, event.client.id);
-       Project uiProject = Project.fromDto(newProject);
+      await data.editProject(event.projectId, event.name, event.billable, amountInCents);
 
-       var client = event.client;
-       client.projects.add(uiProject);
-
-       List<Client> clients = state.clients.map((oldClient) {
-         if (oldClient.id == client.id) return client;
-         return oldClient;
-       }).toList();
-       yield ClientState(clients);
-    }
-    else if (event is EditProject) {
-      var amountInCents = (event.rate * 100).toInt();
-
-      print("EditProject start");
-      print("EditProject start ${event.billable}");
-      ProjectDto newProject = await updateProject(event.projectId, event.name, event.billable, amountInCents);
-      Project uiProject = Project.fromDto(newProject);
-      print("EditProject start ${uiProject.billable}");
       var client = event.client;
 
       List<Project> projects = client.projects.map((oldProject) {
-        if (oldProject.id == uiProject.id) return uiProject;
+        if (oldProject.id == event.projectId) return
+          Project(
+            id: event.projectId,
+            name: event.name,
+            billable: event.billable,
+            rate: amountInCents,
+            clientId: event.client.id,
+            registrations: event.registrations);
         return oldProject;
       }).toList();
 
       client.projects = projects;
 
-      List<Client> clients = state.clients.map((oldClient) {
+      List<Client> clients = (state as ClientsLoadSuccess).clients.map((oldClient) {
         if (oldClient.id == client.id) return client;
         return oldClient;
       }).toList();
-      print("EditProject end");
-      yield ClientState(clients);
+
+
+      yield ClientsLoadSuccess(clients);
     }
     else if (event is DeleteProject) {
-      ProjectDto deletedProjectDto = await deleteProject(event.projectId);
-      Project deletedProject = Project.fromDto(deletedProjectDto);
+      await data.deleteProject(event.projectId);
 
       var client = event.client;
+      client.projects.removeWhere((element) => element.id == event.projectId);
 
-      client.projects.removeWhere((element) => element.id == deletedProject.id);
-
-      List<Client> clients = state.clients.map((oldClient) {
+      List<Client> clients = (state as ClientsLoadSuccess).clients.map((oldClient) {
         if (oldClient.id == client.id) return client;
         return oldClient;
       }).toList();
 
-      yield ClientState(clients);
+      yield ClientsLoadSuccess(clients);
     }
-    else if (event is AddRegistration) {
-      var client = event.client;
-      var project = event.project;
+//    else if (event is AddRegistration) {
+//      var client = event.client;
+//      var project = event.project;
+//
+//      RegistrationDto registrationDto = await sendRegistration(event.date, timeOfDayToMinutes(event.startTime), event.breakTime, timeOfDayToMinutes(event.endTime), project.billable, project.rate, project.id);
+//      Registration registration = Registration.fromDto(registrationDto);
+//
+//      project.registrations.add(registration);
+//
+//      List<Project> projects = client.projects.map((oldProject) {
+//        if (oldProject.id == project.id) return project;
+//        return oldProject;
+//      }).toList();
+//
+//      client.projects = projects;
+//
+//      List<Client> clients = state.clients.map((oldClient) {
+//        if (oldClient.id == client.id) return client;
+//        return oldClient;
+//      }).toList();
+//      yield ClientState(clients);
+//    }
+//    else if (event is EditRegistration) {
+//      var client = event.client;
+//      var project = event.project;
+//
+//      RegistrationDto registrationDto = await updateRegistration(event.registration, event.date, timeOfDayToMinutes(event.startTime), event.breakTime, timeOfDayToMinutes(event.endTime), project.billable, project.rate, project.id);
+//      Registration registration = Registration.fromDto(registrationDto);
+//
+//      List<Registration> registrations = project.registrations.map((oldRegistration) {
+//        if (oldRegistration.id == registration.id) return registration;
+//        return oldRegistration;
+//      }).toList();
+//
+//      project.registrations = registrations;
+//
+//      List<Project> projects = client.projects.map((oldProject) {
+//        if (oldProject.id == project.id) return project;
+//        return oldProject;
+//      }).toList();
+//
+//      client.projects = projects;
+//
+//      List<Client> clients = state.clients.map((oldClient) {
+//        if (oldClient.id == client.id) return client;
+//        return oldClient;
+//      }).toList();
+//      yield ClientState(clients);
+//    }
+//    else if (event is DeleteRegistration) {
+//      RegistrationDto deletedRegistrationDto = await deleteRegistration(event.registrationId);
+//      Registration deletedRegistration = Registration.fromDto(deletedRegistrationDto);
+//
+//      var project = event.project;
+//
+//      project.registrations.removeWhere((element) => element.id == deletedRegistration.id);
+//
+//      var client = event.client;
+//
+//      List<Project> projects = client.projects.map((oldProject) {
+//        if (oldProject.id == project.id) return project;
+//        return oldProject;
+//      }).toList();
+//
+//      client.projects = projects;
+//
+//      List<Client> clients = state.clients.map((oldClient) {
+//        if (oldClient.id == client.id) return client;
+//        return oldClient;
+//      }).toList();
+//
+//      yield ClientState(clients);
 
-      RegistrationDto registrationDto = await sendRegistration(event.date, timeOfDayToMinutes(event.startTime), event.breakTime, timeOfDayToMinutes(event.endTime), project.billable, project.rate, project.id);
-      Registration registration = Registration.fromDto(registrationDto);
-
-      project.registrations.add(registration);
-
-      List<Project> projects = client.projects.map((oldProject) {
-        if (oldProject.id == project.id) return project;
-        return oldProject;
-      }).toList();
-
-      client.projects = projects;
-
-      List<Client> clients = state.clients.map((oldClient) {
-        if (oldClient.id == client.id) return client;
-        return oldClient;
-      }).toList();
-      yield ClientState(clients);
-    }
-    else if (event is EditRegistration) {
-      var client = event.client;
-      var project = event.project;
-
-      RegistrationDto registrationDto = await updateRegistration(event.registration, event.date, timeOfDayToMinutes(event.startTime), event.breakTime, timeOfDayToMinutes(event.endTime), project.billable, project.rate, project.id);
-      Registration registration = Registration.fromDto(registrationDto);
-
-      List<Registration> registrations = project.registrations.map((oldRegistration) {
-        if (oldRegistration.id == registration.id) return registration;
-        return oldRegistration;
-      }).toList();
-
-      project.registrations = registrations;
-
-      List<Project> projects = client.projects.map((oldProject) {
-        if (oldProject.id == project.id) return project;
-        return oldProject;
-      }).toList();
-
-      client.projects = projects;
-
-      List<Client> clients = state.clients.map((oldClient) {
-        if (oldClient.id == client.id) return client;
-        return oldClient;
-      }).toList();
-      yield ClientState(clients);
-    }
-    else if (event is DeleteRegistration) {
-      RegistrationDto deletedRegistrationDto = await deleteRegistration(event.registrationId);
-      Registration deletedRegistration = Registration.fromDto(deletedRegistrationDto);
-
-      var project = event.project;
-
-      project.registrations.removeWhere((element) => element.id == deletedRegistration.id);
-
-      var client = event.client;
-
-      List<Project> projects = client.projects.map((oldProject) {
-        if (oldProject.id == project.id) return project;
-        return oldProject;
-      }).toList();
-
-      client.projects = projects;
-
-      List<Client> clients = state.clients.map((oldClient) {
-        if (oldClient.id == client.id) return client;
-        return oldClient;
-      }).toList();
-
-      yield ClientState(clients);
-    }
   }
 
+  Stream<ClientState> _fetchClients() async* {
+    yield ClientsLoadInProgress();
+    try {
+      List<Client> clients = await data.listClients();
+      if (clients.isEmpty) {
+        yield ClientsLoadEmpty();
+      } else {
+        clients.forEach((client) async {
+          List<Project> projects = await data.listProjects(client.id);
+          client.projects = projects;
+        });
+        yield ClientsLoadSuccess(clients);
+      }
+    } catch (_) {
+      yield ClientsLoadFailed();
+    }
+  }
 
   int timeOfDayToMinutes(TimeOfDay timeOfDay) {
     return Duration(hours: timeOfDay.hour, minutes: timeOfDay.minute).inMinutes;
   }
-
 }
 
-class ClientState {
+abstract class ClientState {
+  const ClientState();
+}
+
+class ClientsLoadInProgress extends ClientState {}
+
+class ClientsLoadFailed extends ClientState {}
+
+class ClientsLoadEmpty extends ClientState {}
+
+class ClientsLoadSuccess extends ClientState {
   final List<Client> clients;
 
-  ClientState(this.clients) : assert(clients != null);
-
-  static ClientState initial() {
-    return ClientState([]);
-  }
+  ClientsLoadSuccess(this.clients);
 }

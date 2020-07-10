@@ -1,3 +1,4 @@
+
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,54 @@ class _ProjectEditorState extends State<ProjectEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
+    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Project",
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).accentColor
+              ],
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          // action button
+          Visibility(
+            visible: widget.project != null,
+            child: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                clientBloc.add(
+                  DeleteProject(widget.client, widget.project.id),
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              bool valid = _formKey.currentState.validate();
+              if(!valid) return;
+
+              assert(clientBloc != null);
+              if(widget.project != null) {
+                clientBloc.add(EditProject(widget.client, widget.project.id, _nameController.text.trim(), _rateController.numberValue, _isSwitched, widget.project.registrations));
+              } else {
+                clientBloc.add(AddProject(widget.client, _nameController.text.trim(), _rateController.numberValue, _isSwitched));
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+      body: Padding(
         padding: EdgeInsets.all(16),
         child: Form(
           key: _formKey,
@@ -81,41 +128,6 @@ class _ProjectEditorState extends State<ProjectEditor> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FlatButton(
-                    child: Text("Annuleren"),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  Visibility(
-                    visible: widget.project != null,
-                    child: FlatButton(
-                      child: Text("Verwijderen", style: TextStyle(color: Colors.red),),
-                      onPressed: () {
-                        final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
-                        clientBloc.add(DeleteProject(widget.client, widget.project.id));
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                  FlatButton(
-                    child: Text("Opslaan"),
-                    onPressed: () async {
-                      bool valid = _formKey.currentState.validate();
-                      if(!valid) return;
-                      final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
-                      assert(clientBloc != null);
-                      if(widget.project != null) {
-                        clientBloc.add(EditProject(widget.client, widget.project.id, _nameController.text.trim(), _rateController.numberValue, _isSwitched));
-                      } else {
-                        clientBloc.add(AddProject(widget.client, _nameController.text.trim(), _rateController.numberValue, _isSwitched));
-                      }
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              )
             ],
           ),
         ),
