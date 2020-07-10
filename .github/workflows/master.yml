@@ -2,9 +2,7 @@ name: Deploy Android
 
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ master ]
 
 jobs:
   build_apk:
