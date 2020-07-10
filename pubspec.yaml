@@ -57,7 +57,9 @@ dependencies:
   provider: ^4.0.5
 
 
-
+dependency_overrides:
+  path: ^1.6.4
+  
 # if you want to change the app icon - set path here and perform following command in terminal
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
