@@ -20,8 +20,8 @@ jobs:
         channel: 'beta'
     - name: Install dependencies
       run: flutter pub get
-    - name: Tests
-      run: flutter test
+#    - name: Tests
+#      run: flutter test
     - run: flutter build apk --debug
     - name: Upload APK
       uses: actions/upload-artifact@master
