@@ -1,6 +1,6 @@
 # Pyre
 
-[![Dart CI]({https://github.com/Runman44/Pyre}/workflows/Flutter%20CI/badge.svg)]({https://github.com/Runman44/Pyre}/actions)
+[![Dart CI](https://github.com/Runman44/Pyre}/workflows/Flutter%20CI/badge.svg)](https://github.com/Runman44/Pyre}/actions)
 
 ## Getting Started
 
