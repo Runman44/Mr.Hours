@@ -57,9 +57,7 @@ class _ClientDetailState extends State<ClientDetail> {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () async {
-              final ClientBloc clientBloc =
-                  BlocProvider.of<ClientBloc>(context);
-              clientBloc.add(
+              BlocProvider.of<ClientBloc>(context).add(
                 DeleteClient(widget.client.id),
               );
               Navigator.pop(context);
@@ -161,7 +159,7 @@ class _ClientDetailState extends State<ClientDetail> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProjectEditor(client: widget.client),
+                  builder: (context) => ProjectEditor(project: null, client: widget.client),
                 ),
               );
             },

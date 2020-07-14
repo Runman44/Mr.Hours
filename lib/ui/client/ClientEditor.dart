@@ -36,8 +36,6 @@ class _ClientEditorState extends State<ClientEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -60,7 +58,7 @@ class _ClientEditorState extends State<ClientEditor> {
             onPressed: () async {
               bool valid = _formKey.currentState.validate();
               if (!valid) return;
-              clientBloc.add(
+              BlocProvider.of<ClientBloc>(context).add(
                 EditClient(widget.client.id, _nameController.text.trim(),
                     _colour, widget.client.projects),
               );

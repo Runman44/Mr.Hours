@@ -6,11 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:provider/provider.dart';
-
 import 'bloc/ClientBloc.dart';
 import 'bloc/RegistrationBloc.dart';
-import 'model/model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

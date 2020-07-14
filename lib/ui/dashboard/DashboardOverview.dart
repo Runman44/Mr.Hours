@@ -68,11 +68,10 @@ class _DashboardOverviewState extends State<DashboardOverview>
 
   @override
   Widget build(BuildContext context) {
-    var dashboardBloc = BlocProvider.of<DashboardBloc>(context);
 
     return BlocListener<RegistrationBloc, RegistrationState>(
         listener: (context, state) {
-          dashboardBloc.add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
+          BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
         },
         child: BlocBuilder<DashboardBloc, DashboardState>(
           builder: (context, state) {

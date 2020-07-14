@@ -32,10 +32,7 @@ class _ExportPageState extends State<ExportPage> {
   //TODO only rebuild whats needed to be rebuild.
   @override
   Widget build(BuildContext context) {
-    ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
-
     return BlocBuilder<ClientBloc, ClientState>(
-      bloc: clientBloc,
       builder: (context, clientState) {
         return Padding(
           padding: const EdgeInsets.all(24.0),
@@ -60,7 +57,7 @@ class _ExportPageState extends State<ExportPage> {
                   });
                 },
                 underline: Container(),
-                items: (clientBloc.state as ClientsLoadSuccess).clients
+                items: (BlocProvider.of<ClientBloc>(context).state as ClientsLoadSuccess).clients
                     .map<DropdownMenuItem<Client>>((Client value) {
                   return DropdownMenuItem<Client>(
                     value: value,
@@ -122,6 +119,11 @@ class _ExportPageState extends State<ExportPage> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _onSelectedDateChanged(DatePeriod newPeriod) {

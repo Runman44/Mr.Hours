@@ -36,7 +36,6 @@ class _ClientCreatorState extends State<ClientCreator> {
 
   @override
   Widget build(BuildContext context) {
-    ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +57,7 @@ class _ClientCreatorState extends State<ClientCreator> {
               bool valid = _formKey.currentState.validate();
               if (!valid) return;
 
-              clientBloc.add(CreateClient(
+              BlocProvider.of<ClientBloc>(context).add(CreateClient(
                   _nameController.text.trim(),
                   _colour,
                   _nameProjectController.text.trim(),

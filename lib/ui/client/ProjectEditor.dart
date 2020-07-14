@@ -38,7 +38,6 @@ class _ProjectEditorState extends State<ProjectEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -61,7 +60,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
             child: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () async {
-                clientBloc.add(
+                BlocProvider.of<ClientBloc>(context).add(
                   DeleteProject(widget.client, widget.project.id),
                 );
                 Navigator.pop(context);
@@ -74,11 +73,11 @@ class _ProjectEditorState extends State<ProjectEditor> {
               bool valid = _formKey.currentState.validate();
               if(!valid) return;
 
-              assert(clientBloc != null);
+              assert(BlocProvider.of<ClientBloc>(context) != null);
               if(widget.project != null) {
-                clientBloc.add(EditProject(widget.client, widget.project.id, _nameController.text.trim(), _rateController.numberValue, _isSwitched, widget.project.registrations));
+                BlocProvider.of<ClientBloc>(context).add(EditProject(widget.client, widget.project.id, _nameController.text.trim(), _rateController.numberValue, _isSwitched, widget.project.registrations));
               } else {
-                clientBloc.add(AddProject(widget.client, _nameController.text.trim(), _rateController.numberValue, _isSwitched));
+                BlocProvider.of<ClientBloc>(context).add(AddProject(widget.client, _nameController.text.trim(), _rateController.numberValue, _isSwitched));
               }
               Navigator.of(context).pop();
             },

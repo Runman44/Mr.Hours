@@ -38,7 +38,6 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
   Project _dropdownValue2;
   DateTime _startDateTime;
   DateTime _endDateTime;
-  int _breakTime;
 
   @override
   void initState() {
@@ -48,7 +47,6 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
 //    _dropdownValue2 = widget.project;
     _startDateTime = widget.startDate;
     _endDateTime = widget.endDate;
-    _breakTime = 0;
   }
 
   @override
@@ -60,8 +58,6 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
   @override
   Widget build(BuildContext context) {
     //TODO other bloc!
-    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
-    final RegistrationBloc registrationBloc = BlocProvider.of<RegistrationBloc>(context);
 
     var projects = _dropdownValue?.projects ?? [];
 
@@ -91,7 +87,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                 child: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () async {
-                    registrationBloc.add(
+                    BlocProvider.of<RegistrationBloc>(context).add(
                       RemoveRegistration(widget.registration),
                     );
                     Navigator.pop(context);
@@ -107,7 +103,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                   if (widget.clientId != null &&
                       widget.projectId != null &&
                       widget.registration != null) {
-                    registrationBloc.add(EditRegistration(
+                    BlocProvider.of<RegistrationBloc>(context).add(EditRegistration(
                         widget.registration,
                         widget.clientId,
                         widget.projectId,
@@ -115,7 +111,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         _endDateTime,
                         0));
                   } else {
-                    registrationBloc.add(CreateRegistration(
+                    BlocProvider.of<RegistrationBloc>(context).add(CreateRegistration(
                         _dropdownValue,
                         _dropdownValue2,
                         _startDateTime,
@@ -156,7 +152,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                               });
                             }
                           : null,
-                      items: (clientBloc.state as ClientsLoadSuccess)
+                      items: (BlocProvider.of<ClientBloc>(context).state as ClientsLoadSuccess)
                           .clients
                           .map<DropdownMenuItem<Client>>((Client value) {
                         return DropdownMenuItem<Client>(

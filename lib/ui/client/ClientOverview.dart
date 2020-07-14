@@ -9,9 +9,8 @@ import 'package:sup/quick_sup.dart';
 class ClientPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final ClientBloc clientBloc = BlocProvider.of<ClientBloc>(context);
+
     return BlocBuilder<ClientBloc, ClientState>(
-      bloc: clientBloc,
       builder: (context, clientState) {
         if (clientState is ClientsLoadInProgress) {
           return Loading();
@@ -57,7 +56,7 @@ class ClientPage extends StatelessWidget {
         return Center(
           child: QuickSup.error(
             title: "Er is iets mis gegaan",
-            onRetry: (){clientBloc.add(LoadClients());},
+            onRetry: (){BlocProvider.of<ClientBloc>(context).add(LoadClients());},
             retryText: "Probeer opnieuw",
           ),
         );
