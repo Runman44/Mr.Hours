@@ -2,7 +2,8 @@ name: Deploy Android
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - v*
 
 jobs:
   build_apk:
@@ -20,8 +21,6 @@ jobs:
         channel: 'beta'
     - name: Install dependencies
       run: flutter pub get
-#    - name: Tests
-#      run: flutter test
     - name: Building
       run: flutter build apk --debug
     - name: Upload to Firebase
