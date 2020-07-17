@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.red,
-  primaryColor: Colors.amber[900],
+  primarySwatch: Colors.teal,
+  primaryColor: Colors.teal[900],
   primaryColorBrightness: Brightness.dark,
-  accentColor: Colors.amber,
+  accentColor: Colors.teal[300],
   accentColorBrightness: Brightness.dark,
   fontFamily: 'PublicSans',
   //scaffoldBackgroundColor: Colors.grey[100],
   scaffoldBackgroundColor: Colors.white,
   bottomSheetTheme: BottomSheetThemeData(
-    backgroundColor: Colors.deepPurple[50],
+    backgroundColor: Colors.teal[50],
   ),
 );
 

@@ -25,26 +25,25 @@ class ClientPage extends StatelessWidget {
         if (clientState is ClientsLoadSuccess) {
           return Material(
             child: ListView(
+              padding: EdgeInsets.only(top: 12),
                     children: clientState.clients
                         .map(
                           (event) => Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: event.color,
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 4.0),
                             child: ListTile(
-                                leading: Bullet(
-                                  color: event.color,
-                                ),
                                 title: Text(event.name),
+                                trailing: Text("projecten ${event.projects.length}"),
                                 onTap: () => {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ClientDetail(client: event)),
+                                                ClientDetail(clientId: event.id)),
                                       ),
                                     }),
                           ),

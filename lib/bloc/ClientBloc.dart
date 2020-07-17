@@ -77,16 +77,18 @@ class ClientBloc extends Bloc<ClientsEvent, ClientState> {
     if (event is LoadClients) {
       yield* _fetchClients();
     } else if (event is CreateClient) {
-      if (state is ClientsLoadSuccess) {
         var amountInCents = (event.rate * 100).toInt();
         Client newClient = await data.insertClient(event.name, event.color);
         Project newProject = await data.insertProject(
             newClient.id, event.projectName, event.billable, amountInCents);
         newClient.projects.add(newProject);
-        List<Client> clients = (state as ClientsLoadSuccess).clients;
-        clients.add(newClient);
-        yield ClientsLoadSuccess(clients);
-      }
+        if (state is ClientsLoadSuccess) {
+          List<Client> clients = (state as ClientsLoadSuccess).clients;
+          clients.add(newClient);
+          yield ClientsLoadSuccess(clients);
+        } else if (state is ClientsLoadEmpty) {
+          yield ClientsLoadSuccess([newClient]);
+        }
     } else if (event is EditClient) {
 
       if (state is ClientsLoadSuccess) {

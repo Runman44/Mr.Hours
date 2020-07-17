@@ -1,4 +1,5 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
+import 'package:eventtracker/components/Bullet.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +23,7 @@ class _ClientEditorState extends State<ClientEditor> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.client?.name);
+    _nameController = TextEditingController(text: widget.client.name);
     _colour = widget.client?.color ?? Colors.grey[50];
     _focus = FocusNode();
   }
@@ -37,35 +38,70 @@ class _ClientEditorState extends State<ClientEditor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Opdrachtgever wijzigen",
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).primaryColor,
-                Theme.of(context).accentColor
-              ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(230.0),
+        child: AppBar(
+          title: Text(
+            "Opdrachtgever wijzigen",
+          ),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.black,
+                  _colour,
+                ],
+              ),
             ),
           ),
-        ),
-        actions: <Widget>[
-          // action button
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () async {
-              bool valid = _formKey.currentState.validate();
-              if (!valid) return;
-              BlocProvider.of<ClientBloc>(context).add(
-                EditClient(widget.client.id, _nameController.text.trim(),
-                    _colour, widget.client.projects),
-              );
-              Navigator.pop(context);
-            },
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(48.0),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 80.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Bullet(
+                    color: _colour,
+                    mini: true,
+                  ),
+                  SizedBox(
+                    width: 25,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _nameController,
+                      validator: (String value) =>
+                      value
+                          .trim()
+                          .isEmpty ? "Vul een naam in" : null,
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      decoration: InputDecoration(),
+
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ],
+          actions: <Widget>[
+            // action button
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: () async {
+                bool valid = _formKey.currentState.validate();
+                if (!valid) return;
+                BlocProvider.of<ClientBloc>(context).add(
+                  EditClient(widget.client.id, _nameController.text.trim(),
+                      _colour, widget.client.projects),
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -74,31 +110,15 @@ class _ClientEditorState extends State<ClientEditor> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                child: Text(
-                  "Vul een naam in",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              TextFormField(
-                controller: _nameController,
-                validator: (String value) =>
-                    value.trim().isEmpty ? "Vul een naam in" : null,
-                decoration: InputDecoration(hintText: "Client naam"),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
-                child: Text(
-                  "Kies een kleur",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
               MaterialColorPicker(
                 physics: const NeverScrollableScrollPhysics(),
                 selectedColor: _colour,
                 shrinkWrap: true,
-                onColorChange: (Color color) => _colour = color,
+                onColorChange: (Color color) {
+                  setState(() {
+                    _colour = color;
+                  });
+                },
               ),
             ],
           ),

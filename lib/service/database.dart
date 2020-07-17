@@ -17,13 +17,6 @@ class DatabaseService {
 
   static void _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE user(
-        id TEXT not null primary key,
-        name TEXT not null,
-        email TEXT not null
-      )
-    ''');
-    await db.execute('''
       create table client(
         id integer not null primary key autoincrement,
         name text not null,
@@ -64,14 +57,6 @@ class DatabaseService {
     DatabaseService repo = DatabaseService(db);
 
     return repo;
-  }
-
-  Future<void> insertUser(User user) async {
-    await _db.insert(
-      'user',
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
   }
 
   Future<Client> insertClient(String name, Color color) async {

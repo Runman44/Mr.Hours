@@ -1,22 +1,5 @@
 import 'package:flutter/material.dart';
 
-class User {
-
-  String id;
-  String email;
-  String name;
-
-  User({this.id, this.email, this.name});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-    };
-  }
-}
-
 class Client {
 
   int id;

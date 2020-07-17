@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:eventtracker/bloc/RegistrationBloc.dart';
-import 'package:eventtracker/components/Bullet.dart';
 import 'package:eventtracker/components/Loading.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/service/database.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/intl.dart';
+import 'package:sup/sup.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DashboardOverview extends StatefulWidget {
@@ -53,7 +53,8 @@ class _DashboardOverviewState extends State<DashboardOverview>
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(first, last)));
+    BlocProvider.of<DashboardBloc>(context)
+        .add(HoursUpdated(DatePeriod(first, last)));
     setState(() {
       _firstDay = first;
       _lastDay = last;
@@ -61,20 +62,21 @@ class _DashboardOverviewState extends State<DashboardOverview>
     });
   }
 
-  void _onCalenderCreated(DateTime first, DateTime last, CalendarFormat format) {
+  void _onCalenderCreated(
+      DateTime first, DateTime last, CalendarFormat format) {
     _firstDay = first;
     _lastDay = last;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return BlocListener<RegistrationBloc, RegistrationState>(
-        listener: (context, state) {
-          BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
-        },
-        child: BlocBuilder<DashboardBloc, DashboardState>(
-          builder: (context, state) {
+      listener: (context, state) {
+        BlocProvider.of<DashboardBloc>(context)
+            .add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
+      },
+      child:
+          BlocBuilder<DashboardBloc, DashboardState>(builder: (context, state) {
         if (state is DashboardLoadInProgress) {
           return Loading();
         }
@@ -88,9 +90,14 @@ class _DashboardOverviewState extends State<DashboardOverview>
             ],
           );
         }
+        if (state is DashboardLoadFailed) {
+          return QuickSup.error(
+            title: "Er is iets mis gegaan",
+            retryText: "Probeer opnieuw",
+          );
+        }
         return Container();
       }),
-
     );
   }
 
@@ -119,44 +126,47 @@ class _DashboardOverviewState extends State<DashboardOverview>
   }
 
   Widget _buildEventList(Map<DateTime, List<DashboardItem>> bookings) {
-    var booking = _getList(bookings);
-    return ListView(
-      children: booking
-          .map((event) => Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                    leading: Bullet(
-                      color: event.clientColor,
-                    ),
-                    title: Text(event.clientName),
-                    subtitle: Text(event.projectName),
-                    trailing: Text(event.minutesToUIString() + " uur"),
-                    onTap: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegistrationEditor(
-                                      clientId: event.clientId,
-                                      clientName: event.clientName,
-                                      projectId: event.projectId,
-                                      projectName: event.projectName,
-                                      registration: event.registrationId,
-                                      startDate: event.startDateTime,
-                                      endDate: event.endDateTime,
-                                    )),
-                          )
-                        }),
-              ))
-          .toList(),
-    );
+    var booking = _getListForSelectedDate(bookings);
+    if (booking.isNotEmpty) {
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              color: booking[index].clientColor,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: ListTile(
+                title: Text(booking[index].clientName),
+                subtitle: Text(booking[index].projectName),
+                trailing: Text(booking[index].minutesToUIString() + " uur"),
+                onTap: () =>
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            RegistrationEditor(
+                              clientId: booking[index].clientId,
+                              clientName: booking[index].clientName,
+                              projectId: booking[index].projectId,
+                              projectName: booking[index].projectName,
+                              registration: booking[index].registrationId,
+                              startDate: booking[index].startDateTime,
+                              endDate: booking[index].endDateTime,
+                            )),
+                  )
+                }),
+          );
+        },
+        itemCount: bookings.length,
+      );
+    } else {
+      return Center(child: QuickSup.empty(title: "Leeg", subtitle: ""));
+    }
   }
 
-  List<DashboardItem> _getList(Map<DateTime, List<DashboardItem>> bookings) {
+  List<DashboardItem> _getListForSelectedDate(Map<DateTime, List<DashboardItem>> bookings) {
     var formatStartDate = _selectedDay;
     var format = DateFormat("yyyy-MM-dd");
     var formatDate = format.format(formatStartDate);
@@ -189,21 +199,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     if (event is HoursUpdated) {
       yield DashboardLoadInProgress();
 
-      List<DashboardItem> items = await data.listRegistrations(event.datePeriod);
+      try {
+        List<DashboardItem> items =
+            await data.listRegistrations(event.datePeriod);
 
-      var result = <DateTime, List<DashboardItem>>{};
-      for (var item in items) {
-        var formatStartDate = item.startDateTime;
-        var format = DateFormat("yyyy-MM-dd");
-        var formatDate = format.format(formatStartDate);
-        var list = result.putIfAbsent(format.parse(formatDate), () => []);
-        var bookingToAdd = item;
-        if (list.isEmpty || !identical(list.last, bookingToAdd)) {
-          list.add(bookingToAdd);
+        var result = <DateTime, List<DashboardItem>>{};
+        for (var item in items) {
+          var formatStartDate = item.startDateTime;
+          var format = DateFormat("yyyy-MM-dd");
+          var formatDate = format.format(formatStartDate);
+          var list = result.putIfAbsent(format.parse(formatDate), () => []);
+          var bookingToAdd = item;
+          if (list.isEmpty || !identical(list.last, bookingToAdd)) {
+            list.add(bookingToAdd);
+          }
         }
-      }
 
-      yield DashboardLoadSuccess(result);
+        yield DashboardLoadSuccess(result);
+      } catch (exception) {
+        yield DashboardLoadFailed();
+      }
     }
   }
 }
@@ -215,6 +230,8 @@ abstract class DashboardState {
 class DashboardInit extends DashboardState {}
 
 class DashboardLoadInProgress extends DashboardState {}
+
+class DashboardLoadFailed extends DashboardState {}
 
 class DashboardLoadSuccess extends DashboardState {
   final Map<DateTime, List<DashboardItem>> bookings;
