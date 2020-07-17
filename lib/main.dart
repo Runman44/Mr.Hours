@@ -1,6 +1,7 @@
 import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/HomeOverview.dart';
+import 'package:eventtracker/ui/dashboard/DashboardBloc.dart';
 import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +25,10 @@ void main() async {
             create: (_) => ClientBloc(data),
           ),
           BlocProvider<RegistrationBloc>(
-            create: (context) => RegistrationBloc(data, BlocProvider.of<ClientBloc>(context)),
+            create: (_) => RegistrationBloc(data),
           ),
           BlocProvider<DashboardBloc>(
-            create: (context) => DashboardBloc(data, BlocProvider.of<RegistrationBloc>(context)),
+            create: (context) => DashboardBloc(data, BlocProvider.of<ClientBloc>(context)),
           ),
         ],
 //        child: DevicePreview(
@@ -60,7 +61,6 @@ class _TimeAppState extends State<TimeApp> {
         // <--- Add the builder
         title: 'Pyre',
         theme: lightTheme,
-//          home: AuthenticationWrapper()),
         home: MyHomePage());
   }
 }

@@ -9,12 +9,8 @@ final ThemeData lightTheme = ThemeData(
   primaryColorBrightness: Brightness.dark,
   accentColor: Colors.teal[300],
   accentColorBrightness: Brightness.dark,
-  fontFamily: 'PublicSans',
-  //scaffoldBackgroundColor: Colors.grey[100],
+  fontFamily: 'QuickSand',
   scaffoldBackgroundColor: Colors.white,
-  bottomSheetTheme: BottomSheetThemeData(
-    backgroundColor: Colors.teal[50],
-  ),
 );
 
 final ThemeData darkTheme = ThemeData(
@@ -26,9 +22,6 @@ final ThemeData darkTheme = ThemeData(
   accentColorBrightness: Brightness.dark,
   fontFamily: 'PublicSans',
   scaffoldBackgroundColor: Colors.grey[800],
-  bottomSheetTheme: BottomSheetThemeData(
-    backgroundColor: Colors.grey[850],
-  ),
 );
 
 final kHintTextStyle = TextStyle(

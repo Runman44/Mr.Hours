@@ -44,10 +44,9 @@ class RemoveRegistration extends RegistrationsEvent {
 }
 
 class RegistrationBloc extends Bloc<RegistrationsEvent, RegistrationState> {
-  final ClientBloc clientBloc;
   final DatabaseService data;
 
-  RegistrationBloc(this.data, this.clientBloc);
+  RegistrationBloc(this.data);
 
   @override
   RegistrationState get initialState => RegistrationState(null, null, null, null, null);

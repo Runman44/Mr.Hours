@@ -1,9 +1,8 @@
-import 'dart:async';
-
+import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/bloc/RegistrationBloc.dart';
+import 'package:eventtracker/components/Bullet.dart';
 import 'package:eventtracker/components/Loading.dart';
 import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,8 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/sup.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'DashboardBloc.dart';
 
 class DashboardOverview extends StatefulWidget {
   @override
@@ -70,11 +71,14 @@ class _DashboardOverviewState extends State<DashboardOverview>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegistrationBloc, RegistrationState>(
-      listener: (context, state) {
-        BlocProvider.of<DashboardBloc>(context)
-            .add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<RegistrationBloc, RegistrationState>(
+            listener: (context, state) {
+          BlocProvider.of<DashboardBloc>(context)
+              .add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
+        }),
+      ],
       child:
           BlocBuilder<DashboardBloc, DashboardState>(builder: (context, state) {
         if (state is DashboardLoadInProgress) {
@@ -131,110 +135,49 @@ class _DashboardOverviewState extends State<DashboardOverview>
       return ListView.builder(
         itemBuilder: (context, index) {
           return Container(
-            decoration: BoxDecoration(
-              color: booking[index].clientColor,
-              borderRadius: BorderRadius.circular(12.0),
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: Card(
+              elevation: 4,
+              child: ListTile(
+                  leading: Bullet(
+                    mini: true,
+                    color: booking[index].clientColor,
+                  ),
+                  title: Text(booking[index].clientName),
+                  subtitle: Text(booking[index].projectName),
+                  trailing: Text(booking[index].minutesToUIString() + " uur"),
+                  onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegistrationEditor(
+                                    clientId: booking[index].clientId,
+                                    clientName: booking[index].clientName,
+                                    projectId: booking[index].projectId,
+                                    projectName: booking[index].projectName,
+                                    registration: booking[index].registrationId,
+                                    startDate: booking[index].startDateTime,
+                                    endDate: booking[index].endDateTime,
+                                  )),
+                        )
+                      }),
             ),
-            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: ListTile(
-                title: Text(booking[index].clientName),
-                subtitle: Text(booking[index].projectName),
-                trailing: Text(booking[index].minutesToUIString() + " uur"),
-                onTap: () =>
-                {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            RegistrationEditor(
-                              clientId: booking[index].clientId,
-                              clientName: booking[index].clientName,
-                              projectId: booking[index].projectId,
-                              projectName: booking[index].projectName,
-                              registration: booking[index].registrationId,
-                              startDate: booking[index].startDateTime,
-                              endDate: booking[index].endDateTime,
-                            )),
-                  )
-                }),
           );
         },
-        itemCount: bookings.length,
+        itemCount: booking.length,
       );
     } else {
-      return Center(child: QuickSup.empty(title: "Leeg", subtitle: ""));
+      return Center(
+          child: QuickSup.empty(subtitle: "Nog geen registraties op deze dag"));
     }
   }
 
-  List<DashboardItem> _getListForSelectedDate(Map<DateTime, List<DashboardItem>> bookings) {
+  List<DashboardItem> _getListForSelectedDate(
+      Map<DateTime, List<DashboardItem>> bookings) {
     var formatStartDate = _selectedDay;
     var format = DateFormat("yyyy-MM-dd");
     var formatDate = format.format(formatStartDate);
     var booking = bookings[format.parse(formatDate)];
     return booking ?? [];
   }
-}
-
-abstract class DashboardEvent {
-  const DashboardEvent();
-}
-
-class HoursUpdated extends DashboardEvent {
-  final DatePeriod datePeriod;
-
-  const HoursUpdated(this.datePeriod);
-}
-
-class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  final DatabaseService data;
-  final RegistrationBloc registrationBloc;
-
-  DashboardBloc(this.data, this.registrationBloc);
-
-  @override
-  DashboardState get initialState => DashboardInit();
-
-  @override
-  Stream<DashboardState> mapEventToState(DashboardEvent event) async* {
-    if (event is HoursUpdated) {
-      yield DashboardLoadInProgress();
-
-      try {
-        List<DashboardItem> items =
-            await data.listRegistrations(event.datePeriod);
-
-        var result = <DateTime, List<DashboardItem>>{};
-        for (var item in items) {
-          var formatStartDate = item.startDateTime;
-          var format = DateFormat("yyyy-MM-dd");
-          var formatDate = format.format(formatStartDate);
-          var list = result.putIfAbsent(format.parse(formatDate), () => []);
-          var bookingToAdd = item;
-          if (list.isEmpty || !identical(list.last, bookingToAdd)) {
-            list.add(bookingToAdd);
-          }
-        }
-
-        yield DashboardLoadSuccess(result);
-      } catch (exception) {
-        yield DashboardLoadFailed();
-      }
-    }
-  }
-}
-
-abstract class DashboardState {
-  const DashboardState();
-}
-
-class DashboardInit extends DashboardState {}
-
-class DashboardLoadInProgress extends DashboardState {}
-
-class DashboardLoadFailed extends DashboardState {}
-
-class DashboardLoadSuccess extends DashboardState {
-  final Map<DateTime, List<DashboardItem>> bookings;
-
-  DashboardLoadSuccess(this.bookings);
 }

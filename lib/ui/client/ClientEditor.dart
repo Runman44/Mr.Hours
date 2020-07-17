@@ -70,7 +70,8 @@ class _ClientEditorState extends State<ClientEditor> {
                   SizedBox(
                     width: 25,
                   ),
-                  Expanded(
+                  Container(
+                    width: 100,
                     child: TextFormField(
                       controller: _nameController,
                       validator: (String value) =>
@@ -104,23 +105,22 @@ class _ClientEditorState extends State<ClientEditor> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(0),
         child: Form(
           key: _formKey,
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              MaterialColorPicker(
-                physics: const NeverScrollableScrollPhysics(),
-                selectedColor: _colour,
-                shrinkWrap: true,
-                onColorChange: (Color color) {
-                  setState(() {
-                    _colour = color;
-                  });
-                },
-              ),
-            ],
+          child: SingleChildScrollView(
+             child: Center(
+               child: MaterialColorPicker(
+                  physics: const NeverScrollableScrollPhysics(),
+                  selectedColor: _colour,
+                  shrinkWrap: true,
+                  onColorChange: (Color color) {
+                    setState(() {
+                      _colour = color;
+                    });
+                  },
+                ),
+             ),
           ),
         ),
       ),

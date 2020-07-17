@@ -11,7 +11,8 @@ class ClientDetail extends StatelessWidget {
 
   ClientDetail({Key key, @required this.clientId}) : super(key: key);
 
-  void startAddNewProject(BuildContext context, Client client, Project project) {
+  void startAddNewProject(
+      BuildContext context, Client client, Project project) {
     showModalBottomSheet(
       context: context,
       builder: (bCtx) {
@@ -22,12 +23,15 @@ class ClientDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClientBloc, ClientState>(
-      builder: (context, state) {
+    return BlocBuilder<ClientBloc, ClientState>(builder: (context, state) {
+      if (state is ClientsLoadSuccess) {
+        final client = (state).clients.firstWhere(
+            (element) => element.id == clientId,
+            orElse: () => null);
 
-        final client = (state as ClientsLoadSuccess)
-        .clients
-        .firstWhere((element) => element.id == clientId, orElse: () => null);
+        if (client == null) {
+          return Container();
+        }
 
         return Scaffold(
           appBar: PreferredSize(
@@ -87,8 +91,7 @@ class ClientDetail extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            ClientEditor(client: client),
+                        builder: (context) => ClientEditor(client: client),
                       ),
                     );
                   },
@@ -124,25 +127,26 @@ class ClientDetail extends StatelessWidget {
                 ...getProductList(context, client),
               ]),
         );
-      },
-    );
+      } else {
+        return Container();
+      }
+    });
   }
-
 
   List<Widget> getProductList(BuildContext context, Client client) {
     var clientProjects = client.projects ?? [];
     var projects = clientProjects
         .map((project) => ListTile(
-      title: Text(project.name),
-      subtitle: Text(
-          "€ ${project.centsToDouble().toStringAsFixed(2)} per uur"),
-      trailing: Text(
-        project.billable ? "Factureerbaar" : "",
-      ),
-      onTap: () {
-        startAddNewProject(context, client, project);
-      },
-    ))
+              title: Text(project.name),
+              subtitle: Text(
+                  "€ ${project.centsToDouble().toStringAsFixed(2)} per uur"),
+              trailing: Text(
+                project.billable ? "Factureerbaar" : "",
+              ),
+              onTap: () {
+                startAddNewProject(context, client, project);
+              },
+            ))
         .toList();
     return projects;
   }

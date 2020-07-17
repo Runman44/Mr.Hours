@@ -1,4 +1,5 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
+import 'package:eventtracker/components/Bullet.dart';
 import 'package:eventtracker/components/Loading.dart';
 import 'package:eventtracker/ui/client/ClientDetail.dart';
 import 'package:flutter/material.dart';
@@ -28,23 +29,25 @@ class ClientPage extends StatelessWidget {
                     children: clientState.clients
                         .map(
                           (event) => Container(
-                            decoration: BoxDecoration(
-                              color: event.color,
-                              borderRadius: BorderRadius.circular(12.0),
+                            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            child: Card(
+                              elevation: 4,
+                              child: ListTile(
+                                  leading: Bullet(
+                                    color: event.color,
+                                    mini: true,
+                                  ),
+                                  title: Text(event.name),
+                                  subtitle: Text("projecten ${event.projects.length}"),
+                                  onTap: () => {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ClientDetail(clientId: event.id)),
+                                        ),
+                                      }),
                             ),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 4.0),
-                            child: ListTile(
-                                title: Text(event.name),
-                                trailing: Text("projecten ${event.projects.length}"),
-                                onTap: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ClientDetail(clientId: event.id)),
-                                      ),
-                                    }),
                           ),
                         )
                         .toList(),
