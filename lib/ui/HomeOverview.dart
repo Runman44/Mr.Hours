@@ -7,6 +7,7 @@ import 'client/ClientCreate.dart';
 import 'client/ClientOverview.dart';
 import 'dashboard/DashboardOverview.dart';
 import 'export/ExportOverview.dart';
+import 'settings/SettingsOverview.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     DashboardOverview(),
     ClientPage(),
     ExportPage(),
-    ExportPage()
+    SettingsPage()
   ];
   final List<String> _appBarTitle = [
     "Overzicht",

@@ -52,19 +52,27 @@ class _DashboardOverviewState extends State<DashboardOverview>
     });
   }
 
-  void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
+  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
+
+    first = DateTime(first.year, first.month, first.day);
+    last = DateTime(last.year, last.month, last.day);
+
     BlocProvider.of<DashboardBloc>(context)
         .add(HoursUpdated(DatePeriod(first, last)));
     setState(() {
       _firstDay = first;
       _lastDay = last;
+      print(first.toIso8601String() + "  dfd  " +last.toIso8601String());
       _calendarController.setCalendarFormat(format);
     });
   }
 
   void _onCalenderCreated(
       DateTime first, DateTime last, CalendarFormat format) {
+
+    first = DateTime(first.year, first.month, first.day);
+    last = DateTime(last.year, last.month, last.day);
+
     _firstDay = first;
     _lastDay = last;
   }
@@ -75,6 +83,7 @@ class _DashboardOverviewState extends State<DashboardOverview>
       listeners: [
         BlocListener<RegistrationBloc, RegistrationState>(
             listener: (context, state) {
+              print(_firstDay.toIso8601String() + "  dfd  " +_lastDay.toIso8601String());
           BlocProvider.of<DashboardBloc>(context)
               .add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
         }),
@@ -115,8 +124,8 @@ class _DashboardOverviewState extends State<DashboardOverview>
       initialSelectedDay: _selectedDay,
       calendarStyle: CalendarStyle(
         selectedColor: Theme.of(context).accentColor,
-        todayColor: Colors.amber[200],
-        markersColor: Colors.red[700],
+        todayColor: Colors.teal[200],
+        markersColor: Colors.teal[700],
         outsideDaysVisible: false,
       ),
       headerStyle: HeaderStyle(

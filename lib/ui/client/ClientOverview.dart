@@ -25,11 +25,11 @@ class ClientPage extends StatelessWidget {
         if (clientState is ClientsLoadSuccess) {
           return Material(
             child: ListView(
-              padding: EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: 12),
                     children: clientState.clients
                         .map(
                           (event) => Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             child: Card(
                               elevation: 4,
                               child: ListTile(

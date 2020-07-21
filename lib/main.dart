@@ -2,8 +2,8 @@ import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/HomeOverview.dart';
 import 'package:eventtracker/ui/dashboard/DashboardBloc.dart';
-import 'package:eventtracker/ui/dashboard/DashboardOverview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -14,10 +14,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final DatabaseService data = await DatabaseService.open();
 
-//  SystemChrome.setPreferredOrientations([
-//    DeviceOrientation.portraitUp,
-//    DeviceOrientation.portraitDown,
-//  ]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
         providers: [

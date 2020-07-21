@@ -103,6 +103,10 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                   onPressed: () async {
                     bool valid = _formKey.currentState.validate();
                     if (!valid) return;
+
+                    _startDateTime = DateTime(_startDateTime.year, _startDateTime.month, _startDateTime.day, _startDateTime.hour, _startDateTime.minute);
+                    _endDateTime = DateTime(_endDateTime.year, _endDateTime.month, _endDateTime.day, _endDateTime.hour, _endDateTime.minute);
+
                     if (widget.clientId != null &&
                         widget.projectId != null &&
                         widget.registration != null) {
