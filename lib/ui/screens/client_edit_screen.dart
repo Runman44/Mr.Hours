@@ -1,5 +1,5 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
-import 'package:eventtracker/components/Bullet.dart';
+import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

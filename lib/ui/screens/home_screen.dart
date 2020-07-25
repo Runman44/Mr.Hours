@@ -1,13 +1,13 @@
-import 'package:eventtracker/ui/registration/RegistrationEditor.dart';
+import 'package:eventtracker/ui/screens/registration_screen.dart';
+import 'package:eventtracker/ui/screens/settings_overview.dart';
 import 'package:flutter/material.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
 import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
 
-import 'client/ClientCreate.dart';
-import 'client/ClientOverview.dart';
-import 'dashboard/DashboardOverview.dart';
-import 'export/ExportOverview.dart';
-import 'settings/SettingsOverview.dart';
+import 'client_create_screen.dart';
+import 'client_screen.dart';
+import 'dashboard_screen.dart';
+import 'export_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   @override

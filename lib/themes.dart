@@ -15,12 +15,12 @@ final ThemeData lightTheme = ThemeData(
 
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primarySwatch: Colors.red,
-  primaryColor: Colors.amber[900],
+  primarySwatch: Colors.teal,
+  primaryColor: Colors.teal[900],
   primaryColorBrightness: Brightness.dark,
-  accentColor: Colors.amber,
+  accentColor: Colors.teal[300],
   accentColorBrightness: Brightness.dark,
-  fontFamily: 'PublicSans',
+  fontFamily: 'QuickSand',
   scaffoldBackgroundColor: Colors.grey[800],
 );
 

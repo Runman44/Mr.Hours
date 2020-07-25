@@ -1,17 +1,16 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 
 class ExportPdfPage extends StatefulWidget {
   final int clientId;
   final DatePeriod selectedPeriod;
 
-  ExportPdfPage(
-      {Key key, @required this.clientId, @required this.selectedPeriod})
-      : super(key: key);
+  ExportPdfPage({Key key, @required this.clientId, @required this.selectedPeriod}) : super(key: key);
 
   @override
   _ExportPdfPageState createState() => _ExportPdfPageState();
@@ -19,6 +18,7 @@ class ExportPdfPage extends StatefulWidget {
 
 class _ExportPdfPageState extends State<ExportPdfPage> {
   String path;
+  final pdf = pw.Document();
 
   @override
   void initState() {
@@ -26,31 +26,31 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
     loadPdf(widget.clientId, widget.selectedPeriod);
   }
 
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/example.pdf');
+  }
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/tellow-time-hours.pdf');
-  }
-
-  Future<File> writeCounter(Uint8List stream) async {
-    final file = await _localFile;
-
-    // Write the file
-    return file.writeAsBytes(stream);
-  }
-
-
   loadPdf(int id, DatePeriod datePeriod) async {
-//    writeCounter(await getPdfReport(id, datePeriod));
-    path = (await _localFile).path;
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          //TODO build good PDF here. based on hours and
+          return pw.Center(
+            child: pw.Text("Hello World"),
+          ); // Center
+        })); //
+    final localFile = await _localFile;
+    await localFile.writeAsBytes(pdf.save());
 
-    if (!mounted) return;
-
-    setState(() {});
+    setState(() {
+      path = localFile.path;
+    });
   }
 
   @override

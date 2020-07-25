@@ -1,7 +1,7 @@
 import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
-import 'package:eventtracker/ui/HomeOverview.dart';
-import 'package:eventtracker/ui/dashboard/DashboardBloc.dart';
+import 'package:eventtracker/ui/screens/home_screen.dart';
+import 'package:eventtracker/bloc/DashboardBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +9,7 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'bloc/ClientBloc.dart';
 import 'bloc/RegistrationBloc.dart';
+import 'bloc/settings_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +31,10 @@ void main() async {
           BlocProvider<DashboardBloc>(
             create: (context) => DashboardBloc(data, BlocProvider.of<ClientBloc>(context)),
           ),
+          BlocProvider<SettingsBloc>(
+            create: (_) => SettingsBloc(data),
+          ),
         ],
-//        child: DevicePreview(
-//          enabled: !kReleaseMode,
-//          builder: (context) => TimeApp(),
-//        ),
     child: TimeApp(),
       )));
 }
@@ -54,14 +54,13 @@ class _TimeAppState extends State<TimeApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-//          locale: DevicePreview.of(context).locale,
-//           <--- Add the locale
-//          builder: DevicePreview.appBuilder,
-        // <--- Add the builder
-        title: 'Pyre',
-        theme: lightTheme,
-        home: MyHomePage());
+    return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
+      return MaterialApp(
+          title: 'Pyre',
+          theme: state.isDarkMode ? darkTheme : lightTheme,
+          home: MyHomePage()
+      );
+    });
   }
 }
 

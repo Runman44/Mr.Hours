@@ -1,6 +1,6 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
-import 'package:eventtracker/ui/export/ExportPdf.dart';
+import 'package:eventtracker/ui/screens/export_pfd_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';

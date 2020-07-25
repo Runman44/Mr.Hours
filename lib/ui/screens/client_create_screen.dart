@@ -1,5 +1,5 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
-import 'package:eventtracker/components/Bullet.dart';
+import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -99,7 +99,8 @@ class _ClientCreatorState extends State<ClientCreator> {
                       _nameProjectController.text.trim(),
                       _rateController.numberValue,
                       _isSwitched));
-                  Navigator.pop(context);
+                  //TODO using named routing we could open the detail screen directly
+                  Navigator.of(context).pop();
                 },
               ),
             ],

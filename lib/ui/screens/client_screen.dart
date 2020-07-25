@@ -1,7 +1,7 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
-import 'package:eventtracker/components/Bullet.dart';
-import 'package:eventtracker/components/Loading.dart';
-import 'package:eventtracker/ui/client/ClientDetail.dart';
+import 'package:eventtracker/ui/widgets/Bullet.dart';
+import 'package:eventtracker/ui/widgets/Loading.dart';
+import 'package:eventtracker/ui/screens/client_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sup/quick_sup.dart';

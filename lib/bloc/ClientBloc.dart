@@ -82,10 +82,10 @@ class ClientBloc extends Bloc<ClientsEvent, ClientState> {
       Client newClient = await data.insertClient(event.name, event.color);
       Project newProject = await data.insertProject(
           newClient.id, event.projectName, event.billable, amountInCents);
-      newClient.projects.add(newProject);
+      newClient.projects.insert(0, newProject);
       if (state is ClientsLoadSuccess) {
         List<Client> clients = (state as ClientsLoadSuccess).clients;
-        clients.add(newClient);
+        clients.insert(0, newClient);
         yield ClientsLoadSuccess(clients);
       } else if (state is ClientsLoadEmpty) {
         yield ClientsLoadSuccess([newClient]);

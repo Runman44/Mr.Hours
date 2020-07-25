@@ -1,7 +1,7 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/bloc/RegistrationBloc.dart';
-import 'package:eventtracker/components/Loading.dart';
+import 'package:eventtracker/ui/widgets/Loading.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
