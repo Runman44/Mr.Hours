@@ -14,6 +14,10 @@
 	<string>Pyre</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>For setting up the logo we need permission to get the gallery</string>
+    <key>NSCameraUsageDescription</key>
+    <string>For setting up the logo we need permission to get the camera</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

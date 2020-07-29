@@ -1,4 +1,5 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
+import 'package:eventtracker/helpers/fade_custom_route.dart';
 import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/screens/client_edit_screen.dart';
@@ -91,7 +92,7 @@ class ClientDetail extends StatelessWidget {
                   onPressed: () async {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      FadeCustomRoute(
                         builder: (context) => ClientEditor(client: client),
                       ),
                     );

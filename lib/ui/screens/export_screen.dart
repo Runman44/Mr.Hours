@@ -1,9 +1,11 @@
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/screens/export_pfd_screen.dart';
+import 'package:eventtracker/ui/widgets/Loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+import 'package:sup/quick_sup.dart';
 
 class ExportPage extends StatefulWidget {
   @override
@@ -34,6 +36,16 @@ class _ExportPageState extends State<ExportPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<ClientBloc, ClientState>(
       builder: (context, clientState) {
+        if (clientState is ClientsLoadInProgress) {
+          return Loading();
+        }
+        if (clientState is ClientsLoadEmpty) {
+          return Center(
+            child: QuickSup.empty(
+              subtitle: 'No clients made yet',
+            ),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.all(24.0),
           child: ListView(children: [

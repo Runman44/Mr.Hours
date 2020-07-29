@@ -21,16 +21,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final ClientBloc clientBloc;
   StreamSubscription dashboardSubscription;
 
-  DashboardBloc(this.data, this.clientBloc) {
+  DashboardBloc(this.data, this.clientBloc) : super(DashboardInit()) {
     dashboardSubscription = clientBloc.listen((statez) {
       if (statez is ClientsLoadSuccess) {
         add(HoursUpdated((this.state as DashboardLoadSuccess).datePeriod));
       }
     });
   }
-
-  @override
-  DashboardState get initialState => DashboardInit();
 
   @override
   Stream<DashboardState> mapEventToState(DashboardEvent event) async* {

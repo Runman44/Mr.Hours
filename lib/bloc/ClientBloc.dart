@@ -68,10 +68,7 @@ class DeleteProject extends ClientsEvent {
 class ClientBloc extends Bloc<ClientsEvent, ClientState> {
   final DatabaseService data;
 
-  ClientBloc(this.data);
-
-  @override
-  ClientState get initialState => ClientsLoadInProgress();
+  ClientBloc(this.data) : super(ClientsLoadInProgress());
 
   @override
   Stream<ClientState> mapEventToState(ClientsEvent event) async* {

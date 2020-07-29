@@ -46,10 +46,7 @@ class RemoveRegistration extends RegistrationsEvent {
 class RegistrationBloc extends Bloc<RegistrationsEvent, RegistrationState> {
   final DatabaseService data;
 
-  RegistrationBloc(this.data);
-
-  @override
-  RegistrationState get initialState => RegistrationState(null, null, null, null, null);
+  RegistrationBloc(this.data) : super(RegistrationState(null, null, null, null, null));
 
   @override
   Stream<RegistrationState> mapEventToState(RegistrationsEvent event) async* {

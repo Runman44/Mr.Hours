@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class Client {
@@ -74,4 +76,18 @@ class DashboardItem {
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }
 
+}
+
+class Settings {
+  bool darkMode;
+  File logo;
+
+  Settings([this.darkMode, this.logo]);
+
+}
+
+class Account {
+  final File logo;
+
+  Account({this.logo});
 }

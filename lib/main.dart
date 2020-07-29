@@ -49,6 +49,7 @@ class _TimeAppState extends State<TimeApp> {
   void initState() {
     super.initState();
     BlocProvider.of<ClientBloc>(context).add(LoadClients());
+    BlocProvider.of<SettingsBloc>(context).add(LoadToggles());
     BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(DateTime.now().subtract(Duration(days: 4)), DateTime.now().add(Duration(days: 4)))));
   }
 
@@ -57,7 +58,7 @@ class _TimeAppState extends State<TimeApp> {
     return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
       return MaterialApp(
           title: 'Pyre',
-          theme: state.isDarkMode ? darkTheme : lightTheme,
+          theme: state.settings.darkMode ? darkTheme : lightTheme,
           home: MyHomePage()
       );
     });

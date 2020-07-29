@@ -20,6 +20,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
   TextEditingController _nameController;
   MoneyMaskedTextController _rateController;
   bool _isSwitched = false;
+  final _projectFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
   void dispose() {
     _nameController.dispose();
     _rateController.dispose();
+    _projectFocusNode.dispose();
     super.dispose();
   }
 
@@ -112,6 +114,10 @@ class _ProjectEditorState extends State<ProjectEditor> {
                       validator: (String value) =>
                           value.trim().isEmpty ? "Vul een naam in" : null,
                       decoration: InputDecoration(hintText: "Project naam"),
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_){
+                        FocusScope.of(context).requestFocus(_projectFocusNode);
+                      },
                     ),
                   ),
                   TextFormField(
@@ -120,6 +126,8 @@ class _ProjectEditorState extends State<ProjectEditor> {
                     validator: (String value) =>
                         value.trim().isEmpty ? "Vul een rate in" : null,
                     decoration: InputDecoration(hintText: "Uurloon"),
+                    textInputAction: TextInputAction.done,
+                    focusNode: _projectFocusNode,
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -127,7 +135,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Factureerbaar"),
-                        Switch(
+                        Switch.adaptive(
                             value: _isSwitched,
                             onChanged: (value) {
                               setState(() {
