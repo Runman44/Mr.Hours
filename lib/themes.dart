@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // https://rxlabz.github.io/panache/#/editor
 
-final ThemeData lightTheme = ThemeData(
+ThemeData lightTheme(BuildContext context) => ThemeData(
   brightness: Brightness.light,
   primarySwatch: Colors.teal,
   primaryColor: Colors.teal[900],
@@ -11,9 +11,14 @@ final ThemeData lightTheme = ThemeData(
   accentColorBrightness: Brightness.dark,
   fontFamily: 'QuickSand',
   scaffoldBackgroundColor: Colors.white,
+  buttonTheme: ButtonTheme.of(context).copyWith(
+    buttonColor: Colors.teal[300],
+    textTheme: ButtonTextTheme.primary,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  )
 );
 
-final ThemeData darkTheme = ThemeData(
+ThemeData darkTheme(BuildContext context) => ThemeData(
   brightness: Brightness.dark,
   primarySwatch: Colors.teal,
   primaryColor: Colors.teal[900],
@@ -22,6 +27,11 @@ final ThemeData darkTheme = ThemeData(
   accentColorBrightness: Brightness.dark,
   fontFamily: 'QuickSand',
   scaffoldBackgroundColor: Colors.grey[800],
+    buttonTheme: ButtonTheme.of(context).copyWith(
+      buttonColor: Colors.teal[300],
+      textTheme: ButtonTextTheme.primary,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    )
 );
 
 final kHintTextStyle = TextStyle(

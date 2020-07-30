@@ -69,7 +69,9 @@ class _ExportPageState extends State<ExportPage> {
                   });
                 },
                 underline: Container(),
-                items: (BlocProvider.of<ClientBloc>(context).state as ClientsLoadSuccess).clients
+                items: (BlocProvider.of<ClientBloc>(context).state
+                        as ClientsLoadSuccess)
+                    .clients
                     .map<DropdownMenuItem<Client>>((Client value) {
                   return DropdownMenuItem<Client>(
                     value: value,
@@ -96,33 +98,25 @@ class _ExportPageState extends State<ExportPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ButtonTheme(
-                    height:50,
-                    child: RaisedButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.picture_as_pdf),
-                          SizedBox(width: 20),
-                          Text("Toon PDF")
-                        ],
-                      ),
-                      color: Theme.of(context).accentColor,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      onPressed: !_isButtonEnabled
-                          ? null
-                          : () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ExportPdfPage(
-                                        clientId: _dropdownValue.id,
-                                        selectedPeriod: _selectedPeriod)),
-                              );
-                            },
+                  RaisedButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.picture_as_pdf),
+                        SizedBox(width: 20),
+                        Text("Toon PDF")
+                      ],
                     ),
+                    onPressed: !_isButtonEnabled
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ExportPdfPage(
+                                      clientId: _dropdownValue.id,
+                                      selectedPeriod: _selectedPeriod)),
+                            );
+                          },
                   ),
                 ],
               ),

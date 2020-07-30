@@ -58,7 +58,7 @@ class _TimeAppState extends State<TimeApp> {
     return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
       return MaterialApp(
           title: 'Pyre',
-          theme: state.settings.darkMode ? darkTheme : lightTheme,
+          theme: state.settings.darkMode ? darkTheme(context) : lightTheme(context),
           home: MyHomePage()
       );
     });
