@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:eventtracker/model/model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
@@ -148,7 +149,7 @@ class DatabaseService {
     );
   }
 
-  Future<List<DashboardItem>> listRegistrations(DatePeriod datePeriod) async {
+  Future<List<DashboardItem>> listRegistrations(DateTimeRange datePeriod) async {
 
     final List<Map<String, dynamic>> maps = await _db.rawQuery('''select registration.id, project_id, project.client_id, client.color, client.name as client_name, project.name as project_name, start_date_time, end_date_time, break from registration inner join project on registration.project_id = project.id inner join client on project.client_id = client.id where start_date_time between '${datePeriod.start.millisecondsSinceEpoch}' and '${datePeriod.end.millisecondsSinceEpoch}' ''');
 

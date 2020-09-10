@@ -58,7 +58,7 @@ class _DashboardOverviewState extends State<DashboardOverview>
     last = DateTime(last.year, last.month, last.day);
 
     BlocProvider.of<DashboardBloc>(context)
-        .add(HoursUpdated(DatePeriod(first, last)));
+        .add(HoursUpdated(DateTimeRange(start: first, end : last)));
     setState(() {
       _firstDay = first;
       _lastDay = last;
@@ -83,9 +83,8 @@ class _DashboardOverviewState extends State<DashboardOverview>
       listeners: [
         BlocListener<RegistrationBloc, RegistrationState>(
             listener: (context, state) {
-              print(_firstDay.toIso8601String() + "  dfd  " +_lastDay.toIso8601String());
           BlocProvider.of<DashboardBloc>(context)
-              .add(HoursUpdated(DatePeriod(_firstDay, _lastDay)));
+              .add(HoursUpdated(DateTimeRange(start: _firstDay, end : _lastDay)));
         }),
       ],
       child:

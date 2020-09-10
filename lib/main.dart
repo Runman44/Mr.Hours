@@ -9,6 +9,7 @@ import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'bloc/ClientBloc.dart';
 import 'bloc/RegistrationBloc.dart';
+import 'bloc/pdf_bloc.dart';
 import 'bloc/settings_bloc.dart';
 
 void main() async {
@@ -27,6 +28,9 @@ void main() async {
           ),
           BlocProvider<RegistrationBloc>(
             create: (_) => RegistrationBloc(data),
+          ),
+          BlocProvider<PdfBloc>(
+            create: (_) => PdfBloc(data),
           ),
           BlocProvider<DashboardBloc>(
             create: (context) => DashboardBloc(data, BlocProvider.of<ClientBloc>(context)),
@@ -50,13 +54,14 @@ class _TimeAppState extends State<TimeApp> {
     super.initState();
     BlocProvider.of<ClientBloc>(context).add(LoadClients());
     BlocProvider.of<SettingsBloc>(context).add(LoadToggles());
-    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DatePeriod(DateTime.now().subtract(Duration(days: 4)), DateTime.now().add(Duration(days: 4)))));
+    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DateTimeRange(start: DateTime.now().subtract(Duration(days: 4)), end : DateTime.now().add(Duration(days: 4)))));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
       return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Pyre',
           theme: state.settings.darkMode ? darkTheme(context) : lightTheme(context),
           home: MyHomePage()

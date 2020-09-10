@@ -4,7 +4,7 @@ import 'package:eventtracker/ui/screens/export_pfd_screen.dart';
 import 'package:eventtracker/ui/widgets/Loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+import 'package:intl/intl.dart';
 import 'package:sup/quick_sup.dart';
 
 class ExportPage extends StatefulWidget {
@@ -16,8 +16,9 @@ class _ExportPageState extends State<ExportPage> {
   Client _dropdownValue;
   DateTime _firstDate;
   DateTime _lastDate;
-  DatePeriod _selectedPeriod;
+  DateTimeRange _selectedPeriod;
   bool _isButtonEnabled;
+  DateFormat _dateFormat = DateFormat("dd-MM-yyyy");
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _ExportPageState extends State<ExportPage> {
 
     DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 7));
     DateTime selectedPeriodEnd = DateTime.now();
-    _selectedPeriod = DatePeriod(selectedPeriodStart, selectedPeriodEnd);
+    _selectedPeriod = DateTimeRange(start: selectedPeriodStart, end: selectedPeriodEnd);
   }
 
   //TODO only rebuild whats needed to be rebuild.
@@ -52,7 +53,7 @@ class _ExportPageState extends State<ExportPage> {
             Container(
               padding: EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton(
@@ -88,9 +89,39 @@ class _ExportPageState extends State<ExportPage> {
               ),
             ),
             Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today),
+                  SizedBox(width: 20),
+                  Text(
+                    "${_dateFormat.format(_selectedPeriod.start)}",
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today),
+                  SizedBox(width: 20),
+                  Text(
+                    "${_dateFormat.format(_selectedPeriod.end)}",
+                  ),
+                ],
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: buildRangeDatePicker(_selectedPeriod, _firstDate,
-                  _lastDate, _onSelectedDateChanged),
+              child: RaisedButton(
+                child: Text("Selecteer periode"),
+                onPressed: () async {
+                  final period = await showDateRangePicker(context: context, firstDate: _firstDate, lastDate: _lastDate);
+                  if (period != null) {
+                    _onSelectedDateChanged(period);
+                  }
+              },)
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -132,18 +163,9 @@ class _ExportPageState extends State<ExportPage> {
     super.dispose();
   }
 
-  void _onSelectedDateChanged(DatePeriod newPeriod) {
+  void _onSelectedDateChanged(DateTimeRange newPeriod) {
     setState(() {
       _selectedPeriod = newPeriod;
     });
-  }
-
-  buildRangeDatePicker(DatePeriod selectedPeriod, DateTime firstAllowedDate,
-      DateTime lastAllowedDate, ValueChanged<DatePeriod> onNewSelected) {
-    return RangePicker(
-        selectedPeriod: selectedPeriod,
-        onChanged: onNewSelected,
-        firstDate: firstAllowedDate,
-        lastDate: lastAllowedDate);
   }
 }

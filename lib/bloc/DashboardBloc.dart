@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eventtracker/service/database.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:intl/intl.dart';
 
 abstract class DashboardEvent {
@@ -11,7 +11,7 @@ abstract class DashboardEvent {
 }
 
 class HoursUpdated extends DashboardEvent {
-  final DatePeriod datePeriod;
+  final DateTimeRange datePeriod;
 
   const HoursUpdated(this.datePeriod);
 }
@@ -69,7 +69,7 @@ class DashboardLoadInProgress extends DashboardState {}
 class DashboardLoadFailed extends DashboardState {}
 
 class DashboardLoadSuccess extends DashboardState {
-  final DatePeriod datePeriod;
+  final DateTimeRange datePeriod;
   final Map<DateTime, List<DashboardItem>> bookings;
 
   DashboardLoadSuccess(this.bookings, this.datePeriod);

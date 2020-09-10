@@ -79,7 +79,7 @@ class _ClientCreatorState extends State<ClientCreator> {
                         validator: (String value) =>
                             value.trim().isEmpty ? "Vul een naam in" : null,
                         style: TextStyle(fontSize: 24, color: Colors.white),
-                        decoration: InputDecoration(hintText: "client"),
+                        decoration: InputDecoration(hintText: "client", hintStyle: TextStyle(color: Colors.white54)),
                       ),
                     ),
                   ],

@@ -144,7 +144,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       padding: EdgeInsets.only(
                           left: 30, right: 30, top: 5, bottom: 5),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).cardTheme.color,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DropdownButton(
@@ -181,7 +181,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       padding: EdgeInsets.only(
                           left: 30, right: 30, top: 5, bottom: 5),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).cardTheme.color,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DropdownButton(

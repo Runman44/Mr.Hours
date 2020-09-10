@@ -49,17 +49,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: SpinCircleBottomBarHolder(
         bottomNavigationBar: SCBottomBarDetails(
             circleColors: [
-              Colors.white,
+              Colors.teal[100],
               Theme.of(context).accentColor,
               Theme.of(context).primaryColor
             ],
             iconTheme: IconThemeData(color: Colors.black45),
-            activeIconTheme:
-            IconThemeData(color: Theme.of(context).accentColor),
+            activeIconTheme: IconThemeData(color: Theme.of(context).accentColor),
             backgroundColor: Colors.white,
             titleStyle: TextStyle(color: Colors.black45, fontSize: 12),
-            activeTitleStyle: TextStyle(
-                color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
+            activeTitleStyle: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
             actionButtonDetails: SCActionButtonDetails(
                 color: Theme.of(context).accentColor,
                 icon: Icon(

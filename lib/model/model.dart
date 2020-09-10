@@ -64,11 +64,18 @@ class DashboardItem {
     var inMinutes = endDateTime
         .difference(startDateTime)
         .inMinutes;
-    print(startDateTime.toIso8601String() + " dss " + endDateTime.toIso8601String());
     Duration duration = Duration(minutes: inMinutes);
     List<String> parts = duration.toString().split(':');
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
   }
+
+  int totalMinutes(){
+    return endDateTime
+        .difference(startDateTime)
+        .inMinutes;
+  }
+
+
 
   TimeOfDay minutesToTimeOfDay(int minutes) {
     Duration duration = Duration(minutes: minutes);
