@@ -31,7 +31,7 @@ class ClientPage extends StatelessWidget {
                           (event) => Container(
                             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             child: Card(
-                              elevation: 4,
+                              elevation: 0,
                               child: ListTile(
                                   leading: Bullet(
                                     color: event.color,

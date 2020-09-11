@@ -4,6 +4,6 @@
 <!-- The background color, preferably the same as your normal theme -->
     <item android:drawable="@android:color/white"/>
 
-    <item android:drawable="@drawable/ic_launcher" android:gravity="center" />
+    <item android:drawable="@mipmap/ic_launcher" android:gravity="center" />
 
 </layer-list>
