@@ -5,8 +5,6 @@ import 'package:eventtracker/service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ClientBloc.dart';
-
 abstract class SettingsEvent {
   const SettingsEvent();
 }

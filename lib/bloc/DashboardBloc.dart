@@ -30,6 +30,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   @override
+  Future<void> close() {
+    dashboardSubscription.cancel();
+    return super.close();
+  }
+
+  @override
   Stream<DashboardState> mapEventToState(DashboardEvent event) async* {
     if (event is HoursUpdated) {
       yield DashboardLoadInProgress();

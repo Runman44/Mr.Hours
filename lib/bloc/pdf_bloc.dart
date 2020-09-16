@@ -3,7 +3,6 @@ import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 abstract class PdfEvent {
   const PdfEvent();

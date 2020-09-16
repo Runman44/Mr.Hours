@@ -2,8 +2,6 @@ import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'ClientBloc.dart';
-
 abstract class RegistrationsEvent {
   const RegistrationsEvent();
 }
