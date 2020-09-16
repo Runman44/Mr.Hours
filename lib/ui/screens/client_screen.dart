@@ -18,7 +18,7 @@ class ClientPage extends StatelessWidget {
         if (clientState is ClientsLoadEmpty) {
           return Center(
             child: QuickSup.empty(
-              subtitle: 'Nog geen clienten aangemaakt',
+              subtitle: 'Nog geen klanten aangemaakt',
             ),
           );
         }

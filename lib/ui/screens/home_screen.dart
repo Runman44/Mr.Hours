@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   }),
               SCBottomBarItem(
                   icon: Icons.person,
-                  title: "Clienten",
+                  title: "Klanten",
                   onPressed: () {
                     setState(() {
                       _currentIndex = 1;

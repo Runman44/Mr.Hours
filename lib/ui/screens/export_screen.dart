@@ -43,7 +43,7 @@ class _ExportPageState extends State<ExportPage> {
         if (clientState is ClientsLoadEmpty) {
           return Center(
             child: QuickSup.empty(
-              subtitle: 'Nog geen clienten aangemaakt',
+              subtitle: 'Nog geen klanten aangemaakt',
             ),
           );
         }
