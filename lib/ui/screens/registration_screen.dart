@@ -15,6 +15,7 @@ class RegistrationEditor extends StatefulWidget {
   final int registration;
   final DateTime startDate;
   final DateTime endDate;
+  final String tasks;
 
   RegistrationEditor(
       {Key key,
@@ -24,7 +25,8 @@ class RegistrationEditor extends StatefulWidget {
       @required this.clientName,
       @required this.registration,
       @required this.startDate,
-      @required this.endDate})
+      @required this.endDate,
+      @required this.tasks})
       : super(key: key);
 
   @override
@@ -35,6 +37,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
   FocusNode _focus;
   final _formKey = GlobalKey<FormState>();
   Client _dropdownValue;
+  TextEditingController _taskController = new TextEditingController();
   Project _dropdownValue2;
   DateTime _startDateTime;
   DateTime _endDateTime;
@@ -45,6 +48,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
     _focus = FocusNode();
     _startDateTime = widget.startDate;
     _endDateTime = widget.endDate;
+    _taskController.text = widget.tasks;
   }
 
   @override
@@ -110,7 +114,8 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                     widget.projectId,
                     _startDateTime,
                     _endDateTime,
-                    0));
+                    0,
+                    _taskController.text.trim(),),);
               } else {
                 BlocProvider.of<RegistrationBloc>(context).add(
                     CreateRegistration(
@@ -120,7 +125,8 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         _endDateTime,
                         0,
                         _dropdownValue2.rate,
-                        _dropdownValue2.billable));
+                        _dropdownValue2.billable,
+                        _taskController.text.trim()));
               }
               Navigator.pop(context);
             },
@@ -278,6 +284,13 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       }),
                       resetIcon: Icon(Icons.delete),
                     ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    TextFormField(
+                      controller: _taskController,
+                      decoration: InputDecoration(hintText: "Taken"),
+                    )
                   ],
                 ),
               ),

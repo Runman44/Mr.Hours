@@ -41,6 +41,7 @@ class DatabaseService {
         start_date_time int not null,
         end_date_time int not null,
         break integer not null,
+        tasks text not null,
         foreign key(project_id) references project(id) ON DELETE CASCADE
       )
     ''');
@@ -127,17 +128,17 @@ class DatabaseService {
     });
   }
 
-  Future<Registration> insertRegistration(int projectId, DateTime startDateTime, DateTime endDateTime, int breakTime) async {
+  Future<Registration> insertRegistration(int projectId, DateTime startDateTime, DateTime endDateTime, int breakTime, String tasks) async {
     int st = startDateTime?.millisecondsSinceEpoch;
     int et = endDateTime?.millisecondsSinceEpoch;
-    int id = await _db.rawInsert("insert into registration(project_id, start_date_time, end_date_time, break) values(?, ?, ?, ?)", <dynamic>[projectId, st, et, breakTime]);
+    int id = await _db.rawInsert("insert into registration(project_id, start_date_time, end_date_time, break, tasks) values(?, ?, ?, ?, ?)", <dynamic>[projectId, st, et, breakTime, tasks]);
     return Registration(id: id, startDateTime: startDateTime, endDateTime: endDateTime, breakTime: breakTime, projectId: projectId);
   }
 
-  Future<void> editRegistration(int registrationId, int projectId, DateTime startDateTime, DateTime endDateTime, int breakTime) async {
+  Future<void> editRegistration(int registrationId, int projectId, DateTime startDateTime, DateTime endDateTime, int breakTime, String tasks) async {
     int st = startDateTime?.millisecondsSinceEpoch;
     int et = endDateTime?.millisecondsSinceEpoch;
-    int rows = await _db.rawUpdate("update registration set project_id=?, break=?, start_date_time=?, end_date_time=? where id=?", <dynamic>[projectId, breakTime, st, et, registrationId]);
+    int rows = await _db.rawUpdate("update registration set project_id=?, break=?, start_date_time=?, end_date_time=?, tasks=? where id=?", <dynamic>[projectId, breakTime, st, et, tasks, registrationId]);
     assert(rows == 1);
   }
 
@@ -151,7 +152,7 @@ class DatabaseService {
 
   Future<List<DashboardItem>> listRegistrations(DateTimeRange datePeriod) async {
 
-    final List<Map<String, dynamic>> maps = await _db.rawQuery('''select registration.id, project_id, project.client_id, client.color, client.name as client_name, project.name as project_name, start_date_time, end_date_time, break from registration inner join project on registration.project_id = project.id inner join client on project.client_id = client.id where start_date_time between '${datePeriod.start.millisecondsSinceEpoch}' and '${datePeriod.end.millisecondsSinceEpoch}' ''');
+    final List<Map<String, dynamic>> maps = await _db.rawQuery('''select registration.id, project_id, project.client_id, client.color, client.name as client_name, project.name as project_name, start_date_time, end_date_time, break, tasks from registration inner join project on registration.project_id = project.id inner join client on project.client_id = client.id where start_date_time between '${datePeriod.start.millisecondsSinceEpoch}' and '${datePeriod.end.millisecondsSinceEpoch}' ''');
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
@@ -165,14 +166,14 @@ class DatabaseService {
           startDateTime: DateTime.fromMillisecondsSinceEpoch(maps[i]["start_date_time"] as int),
           endDateTime:  DateTime.fromMillisecondsSinceEpoch(maps[i]["end_date_time"] as int),
           breakTime: maps[i]['break'],
-
+          tasks: maps[i]['tasks'],
       );
     });
   }
 
   Future<List<DashboardItem>> listRegistrationsFromClient(int clientId, DatePeriod datePeriod) async {
 
-    final List<Map<String, dynamic>> maps = await _db.rawQuery('''select registration.id, project_id, project.client_id, client.color, client.name as client_name, project.name as project_name, start_date_time, end_date_time, break from registration inner join project on registration.project_id = project.id inner join client on project.client_id = client.id where start_date_time between '${datePeriod.start.millisecondsSinceEpoch}' and '${datePeriod.end.millisecondsSinceEpoch}' ''');
+    final List<Map<String, dynamic>> maps = await _db.rawQuery('''select registration.id, project_id, project.client_id, client.color, client.name as client_name, project.name as project_name, start_date_time, end_date_time, break, tasks from registration inner join project on registration.project_id = project.id inner join client on project.client_id = client.id where start_date_time between '${datePeriod.start.millisecondsSinceEpoch}' and '${datePeriod.end.millisecondsSinceEpoch}' ''');
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
@@ -186,7 +187,7 @@ class DatabaseService {
         startDateTime: DateTime.fromMillisecondsSinceEpoch(maps[i]["start_date_time"] as int),
         endDateTime:  DateTime.fromMillisecondsSinceEpoch(maps[i]["end_date_time"] as int),
         breakTime: maps[i]['break'],
-
+        tasks: maps[i]['tasks'],
       );
     });
   }

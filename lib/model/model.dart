@@ -57,8 +57,9 @@ class DashboardItem {
   DateTime startDateTime;
   DateTime endDateTime;
   int breakTime;
+  String tasks;
 
-  DashboardItem({this.registrationId, this.projectId, this.clientId, this.clientName, this.clientColor, this.projectName, this.startDateTime, this.endDateTime, this.breakTime});
+  DashboardItem({this.registrationId, this.projectId, this.clientId, this.clientName, this.clientColor, this.projectName, this.startDateTime, this.endDateTime, this.breakTime, this.tasks});
 
   String minutesToUIString() {
     var inMinutes = endDateTime

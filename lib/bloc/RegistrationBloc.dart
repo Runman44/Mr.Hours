@@ -14,8 +14,9 @@ class CreateRegistration extends RegistrationsEvent {
   final int breakTime;
   final int rate;
   final bool billable;
+  final String tasks;
 
-  const CreateRegistration(this.client, this.project, this.startDate, this.endDate, this.breakTime, this.rate, this.billable);
+  const CreateRegistration(this.client, this.project, this.startDate, this.endDate, this.breakTime, this.rate, this.billable, this.tasks);
 }
 
 class EditRegistration extends RegistrationsEvent {
@@ -25,6 +26,7 @@ class EditRegistration extends RegistrationsEvent {
   final DateTime startDate;
   final DateTime endDate;
   final int breakTime;
+  final String tasks;
 
   const EditRegistration(
       this.registration,
@@ -32,7 +34,8 @@ class EditRegistration extends RegistrationsEvent {
       this.projectId,
       this.startDate,
       this.endDate,
-      this.breakTime);
+      this.breakTime,
+      this.tasks);
 }
 
 class RemoveRegistration extends RegistrationsEvent {
@@ -44,19 +47,19 @@ class RemoveRegistration extends RegistrationsEvent {
 class RegistrationBloc extends Bloc<RegistrationsEvent, RegistrationState> {
   final DatabaseService data;
 
-  RegistrationBloc(this.data) : super(RegistrationState(null, null, null, null, null));
+  RegistrationBloc(this.data) : super(RegistrationState(null, null, null, null, null, null));
 
   @override
   Stream<RegistrationState> mapEventToState(RegistrationsEvent event) async* {
     if (event is CreateRegistration) {
-      await data.insertRegistration(event.project.id, event.startDate, event.endDate, event.breakTime);
-      yield RegistrationState(state.client, state.project, state.startDate, state.endDate, state.breakTime);
+      await data.insertRegistration(event.project.id, event.startDate, event.endDate, event.breakTime, event.tasks);
+      yield RegistrationState(state.client, state.project, state.startDate, state.endDate, state.breakTime, state.tasks);
     } else if (event is EditRegistration) {
-      await data.editRegistration(event.registration, event.projectId, event.startDate, event.endDate, event.breakTime);
-      yield RegistrationState(state.client, state.project, state.startDate, state.endDate, state.breakTime);
+      await data.editRegistration(event.registration, event.projectId, event.startDate, event.endDate, event.breakTime, event.tasks);
+      yield RegistrationState(state.client, state.project, state.startDate, state.endDate, state.breakTime, state.tasks);
     } else if (event is RemoveRegistration) {
       await data.deleteRegistration(event.registrationId);
-      yield RegistrationState(null, null, null, null, null);
+      yield RegistrationState(null, null, null, null, null, null);
     }
   }
 }
@@ -68,7 +71,8 @@ class RegistrationState {
   final DateTime startDate;
   final DateTime endDate;
   final int breakTime;
+  final String tasks;
 
-  const RegistrationState(this.client, this.project, this.startDate, this.endDate, this.breakTime);
+  const RegistrationState(this.client, this.project, this.startDate, this.endDate, this.breakTime, this.tasks);
 
 }

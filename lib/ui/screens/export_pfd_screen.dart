@@ -198,7 +198,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
   }
 
   pw.Widget _contentTable(pw.Context context, List<DashboardItem> bookings) {
-    const tableHeaders = ['Datum', 'Project', 'Uur'];
+    const tableHeaders = ['Datum', 'Project', 'Taken', 'Uur'];
 
     String getValue(DashboardItem booking, int col) {
       switch (col) {
@@ -207,6 +207,8 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
         case 1:
           return booking.projectName;
         case 2:
+          return booking.tasks;
+        case 3:
           return booking.minutesToUIString();
       }
       return '';
@@ -223,7 +225,8 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
       cellAlignments: {
         0: pw.Alignment.centerLeft,
         1: pw.Alignment.center,
-        2: pw.Alignment.centerRight,
+        2: pw.Alignment.center,
+        3: pw.Alignment.centerRight,
       },
       headerStyle: pw.TextStyle(
         color: PdfColors.black,

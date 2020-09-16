@@ -164,6 +164,7 @@ class _DashboardOverviewState extends State<DashboardOverview>
                                     registration: booking[index].registrationId,
                                     startDate: booking[index].startDateTime,
                                     endDate: booking[index].endDateTime,
+                                    tasks: booking[index].tasks,
                                   )),
                         )
                       }),
