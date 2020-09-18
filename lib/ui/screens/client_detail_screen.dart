@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/helpers/fade_custom_route.dart';
-import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/screens/client_edit_screen.dart';
+import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +41,7 @@ class ClientDetail extends StatelessWidget {
             preferredSize: Size.fromHeight(230.0),
             child: AppBar(
               title: Text(
-                "Opdrachtgever",
+                "customer".tr(),
               ),
               flexibleSpace: Container(
                 decoration: BoxDecoration(
@@ -113,7 +114,7 @@ class ClientDetail extends StatelessWidget {
                   width: 10,
                 ),
                 Text(
-                  "Project toevoegen",
+                  "add_project".tr(),
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -140,10 +141,10 @@ class ClientDetail extends StatelessWidget {
     var projects = clientProjects
         .map((project) => ListTile(
               title: Text(project.name),
-              subtitle: Text(
-                  "€ ${project.centsToDouble().toStringAsFixed(2)} per uur"),
+              subtitle: Text("rate_of_hours"
+                  .tr(args: [project.centsToDouble().toStringAsFixed(2)])),
               trailing: Text(
-                project.billable ? "Factureerbaar" : "",
+                project.billable ? "invoiceable".tr() : "",
               ),
               onTap: () {
                 startAddNewProject(context, client, project);

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/quick_sup.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ExportPage extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _ExportPageState extends State<ExportPage> {
         if (clientState is ClientsLoadEmpty) {
           return Center(
             child: QuickSup.empty(
-              subtitle: 'Nog geen klanten aangemaakt',
+              subtitle: 'no_customers_warning'.tr(),
             ),
           );
         }
@@ -61,7 +62,7 @@ class _ExportPageState extends State<ExportPage> {
                 icon: Icon(Icons.keyboard_arrow_down),
                 style: Theme.of(context).textTheme.bodyText2,
                 disabledHint: Text(""),
-                hint: Text("Selecteer een opdrachtgever"),
+                hint: Text("select_customer".tr()),
                 value: _dropdownValue,
                 onChanged: (newValue) {
                   setState(() {
@@ -84,7 +85,7 @@ class _ExportPageState extends State<ExportPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
               child: Text(
-                "Kies een periode",
+                "choose_period".tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -115,7 +116,7 @@ class _ExportPageState extends State<ExportPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
               child: RaisedButton(
-                child: Text("Selecteer periode"),
+                child: Text("select_period".tr()),
                 onPressed: () async {
                   final period = await showDateRangePicker(context: context, firstDate: _firstDate, lastDate: _lastDate);
                   if (period != null) {
@@ -134,7 +135,7 @@ class _ExportPageState extends State<ExportPage> {
                       children: [
                         Icon(Icons.picture_as_pdf),
                         SizedBox(width: 20),
-                        Text("Toon PDF")
+                        Text("show_pdf".tr())
                       ],
                     ),
                     onPressed: !_isButtonEnabled
@@ -156,11 +157,6 @@ class _ExportPageState extends State<ExportPage> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void _onSelectedDateChanged(DateTimeRange newPeriod) {

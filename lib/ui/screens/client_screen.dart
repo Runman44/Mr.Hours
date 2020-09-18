@@ -5,6 +5,7 @@ import 'package:eventtracker/ui/screens/client_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sup/quick_sup.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientPage extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class ClientPage extends StatelessWidget {
         if (clientState is ClientsLoadEmpty) {
           return Center(
             child: QuickSup.empty(
-              subtitle: 'Nog geen klanten aangemaakt',
+              subtitle: 'no_customers_warning'.tr(),
             ),
           );
         }
@@ -38,7 +39,7 @@ class ClientPage extends StatelessWidget {
                                     mini: true,
                                   ),
                                   title: Text(event.name),
-                                  subtitle: Text("projecten ${event.projects.length}"),
+                                  subtitle: Text("amount_of_projects".tr(args: [event.projects.length.toString()])),
                                   onTap: () => {
                                         Navigator.push(
                                           context,
@@ -56,9 +57,9 @@ class ClientPage extends StatelessWidget {
         }
         return Center(
           child: QuickSup.error(
-            title: "Er is iets mis gegaan",
+            title: "something_went_wrong".tr(),
             onRetry: (){BlocProvider.of<ClientBloc>(context).add(LoadClients());},
-            retryText: "Probeer opnieuw",
+            retryText: "try_again".tr(),
           ),
         );
       },

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/quick_sup.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class RegistrationEditor extends StatefulWidget {
   final int clientId;
@@ -64,7 +65,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.registration == null ? "Uren toevoegen" : "Uren wijzigen",
+          widget.registration == null ? "add_hours".tr() : "change_hours".tr(),
         ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -154,7 +155,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         icon: Icon(Icons.keyboard_arrow_down),
                         style: Theme.of(context).textTheme.bodyText2,
                         disabledHint: Text(widget.clientName ?? ""),
-                        hint: Text("Kies een opdrachtgever"),
+                        hint: Text("choose_customer".tr()),
                         value: _dropdownValue,
                         onChanged: widget.clientId == null
                             ? (newValue) {
@@ -186,7 +187,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DropdownButton(
-                        hint: Text("Selecteer een project"),
+                        hint: Text("select_project".tr()),
                         disabledHint: Text(widget.projectName ?? ""),
                         value: _dropdownValue2,
                         icon: Icon(Icons.keyboard_arrow_down),
@@ -212,7 +213,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       height: 24,
                     ),
                     Text(
-                      "Wanneer ben je begonnen?",
+                      "when_did_you_start".tr(),
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -239,7 +240,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         }
                       },
                       autovalidate: true,
-                      validator: (date) => date == null ? 'Invalid date' : null,
+                      validator: (date) => date == null ? 'invalid_date'.tr() : null,
                       initialValue: _startDateTime,
                       onChanged: (date) => setState(() {
                         _startDateTime = date;
@@ -250,7 +251,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                       height: 12,
                     ),
                     Text(
-                      "Wanneer ben je gestopt?",
+                      "when_did_you_stop".tr(),
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -277,7 +278,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         }
                       },
                       autovalidate: true,
-                      validator: (date) => date == null ? 'Invalid date' : null,
+                      validator: (date) => date == null ? 'invalid_date'.tr() : null,
                       initialValue: _endDateTime,
                       onChanged: (date) => setState(() {
                         _endDateTime = date;
@@ -289,7 +290,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                     ),
                     TextFormField(
                       controller: _taskController,
-                      decoration: InputDecoration(hintText: "Taken"),
+                      decoration: InputDecoration(hintText: "tasks".tr()),
                     )
                   ],
                 ),
@@ -299,7 +300,7 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
           if (clientState is ClientsLoadEmpty) {
             return Center(
               child: QuickSup.empty(
-                subtitle: 'Nog geen klanten aangemaakt',
+                subtitle: 'no_customers_warning'.tr(),
               ),
             );
           }

@@ -4,6 +4,7 @@ import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ClientEditor extends StatefulWidget {
   final Client client;
@@ -42,7 +43,7 @@ class _ClientEditorState extends State<ClientEditor> {
         preferredSize: Size.fromHeight(230.0),
         child: AppBar(
           title: Text(
-            "Opdrachtgever wijzigen",
+            "change_customer".tr(),
           ),
           flexibleSpace: Container(
             decoration: BoxDecoration(
@@ -77,7 +78,7 @@ class _ClientEditorState extends State<ClientEditor> {
                       validator: (String value) =>
                       value
                           .trim()
-                          .isEmpty ? "Vul een naam in" : null,
+                          .isEmpty ? "add_name".tr() : null,
                       style: TextStyle(fontSize: 24, color: Colors.white),
                       decoration: InputDecoration(),
 

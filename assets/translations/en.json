@@ -1,0 +1,51 @@
+{
+  "overview_title": "Overview",
+  "customer_title": "Customers",
+  "rapport_title": "Report",
+  "settings_title": "Settings",
+
+  "add_client": "Add customer",
+  "add_name": "Enter a name",
+  "customer": "Customer",
+  "no_customers_warning": "No customer created yet",
+  "select_customer": "Select a customer",
+  "change_customer": "Change customer",
+  "choose_customer": "Choose customer",
+
+  "project": "Project",
+  "project_name": "Project name",
+  "add_project": "Add project",
+  "select_project": "Select a project",
+  "amount_of_projects": "projects {}",
+
+  "hour_registration": "Hour registration",
+  "no_registrations_yet": "No registrations yet",
+  "add_rate": "Enter a rate",
+  "hour_rate": "Hourly rate",
+  "invoiceable": "Invoiceable",
+  "add_hours": "Add hours",
+  "change_hours": "Change hours",
+  "amount_of_hours": "{} hour",
+  "rate_of_hours": "€ {} per hour",
+  "choose_period": "Choose a period",
+  "select_period": "Select period",
+  "when_did_you_start": "When did you start?",
+  "when_did_you_stop": "When did you stop?",
+
+  "pdf": "Pdf",
+  "show_pdf": "Show PDF",
+  "date": "Date",
+  "tasks": "Task",
+  "hour": "Hour",
+  "total": "Total",
+
+  "dark_mode": "Dark-mode",
+  "feedback": "Give us feedback",
+  "feedback_subject_mail": "Feedback for Pyre",
+  "review": "Give us a review",
+  "profile_logo": "No logo",
+  "invalid_date": "Invalid date",
+
+  "something_went_wrong": "Something went wrong",
+  "try_again": "Try again"
+}

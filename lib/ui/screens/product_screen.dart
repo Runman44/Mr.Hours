@@ -3,6 +3,7 @@ import 'package:eventtracker/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProjectEditor extends StatefulWidget {
   final Project project;
@@ -58,7 +59,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Project", style: TextStyle(color: Colors.white, fontSize: 20, fontStyle: FontStyle.normal),),
+              Text("project".tr(), style: TextStyle(color: Colors.white, fontSize: 20, fontStyle: FontStyle.normal),),
               Spacer(flex: 1,),
               Visibility(
                 visible: widget.project != null,
@@ -112,8 +113,8 @@ class _ProjectEditorState extends State<ProjectEditor> {
                     child: TextFormField(
                       controller: _nameController,
                       validator: (String value) =>
-                          value.trim().isEmpty ? "Vul een naam in" : null,
-                      decoration: InputDecoration(hintText: "Project naam"),
+                          value.trim().isEmpty ? "add_name".tr() : null,
+                      decoration: InputDecoration(hintText: "project_name".tr()),
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_){
                         FocusScope.of(context).requestFocus(_projectFocusNode);
@@ -124,8 +125,8 @@ class _ProjectEditorState extends State<ProjectEditor> {
                     controller: _rateController,
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
                     validator: (String value) =>
-                        value.trim().isEmpty ? "Vul een rate in" : null,
-                    decoration: InputDecoration(hintText: "Uurloon"),
+                        value.trim().isEmpty ? "add_rate".tr() : null,
+                    decoration: InputDecoration(hintText: "hour_rate".tr()),
                     textInputAction: TextInputAction.done,
                     focusNode: _projectFocusNode,
                   ),
@@ -134,7 +135,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Factureerbaar"),
+                        Text("invoiceable".tr()),
                         Switch.adaptive(
                             value: _isSwitched,
                             onChanged: (value) {

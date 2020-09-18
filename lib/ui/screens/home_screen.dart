@@ -3,6 +3,7 @@ import 'package:eventtracker/ui/screens/settings_overview.dart';
 import 'package:flutter/material.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
 import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'client_create_screen.dart';
 import 'client_screen.dart';
@@ -23,10 +24,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     SettingsPage()
   ];
   final List<String> _appBarTitle = [
-    "Overzicht",
-    "Opdrachtgevers",
-    "Rapportage",
-    "Instellingen"
+    "overview_title".tr(),
+    "customer_title".tr(),
+    "rapport_title".tr(),
+    "settings_title".tr()
   ];
 
   @override
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               // Suggested count : 4
               SCBottomBarItem(
                   icon: Icons.view_list,
-                  title: "Overzicht",
+                  title: "overview_title".tr(),
                   onPressed: () {
                     setState(() {
                       _currentIndex = 0;
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   }),
               SCBottomBarItem(
                   icon: Icons.person,
-                  title: "Klanten",
+                  title: "customer_title".tr(),
                   onPressed: () {
                     setState(() {
                       _currentIndex = 1;
@@ -87,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   }),
               SCBottomBarItem(
                   icon: Icons.pie_chart,
-                  title: "Rapportage",
+                  title: "rapport_title".tr(),
                   onPressed: () {
                     setState(() {
                       _currentIndex = 2;
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   }),
               SCBottomBarItem(
                   icon: Icons.settings,
-                  title: "Instellingen",
+                  title: "settings_title".tr(),
                   onPressed: () {
                     setState(() {
                       _currentIndex = 3;

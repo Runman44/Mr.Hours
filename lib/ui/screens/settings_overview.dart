@@ -4,7 +4,9 @@ import 'package:eventtracker/bloc/settings_bloc.dart';
 import 'package:eventtracker/ui/widgets/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -27,25 +29,33 @@ class SettingsPage extends StatelessWidget {
           ),
           Divider(),
           SwitchListTile(
-            title: Text("Dark-mode"),
+            title: Text("dark_mode".tr()),
             value: state.settings.darkMode,
-            subtitle: Text("Beter voor je ogen"),
             onChanged: (newValue) {
               settingsBloc.add(ToggleDarkMode(newValue));
             },
           ),
           ListTile(
-            title: Text("Geef ons feedback"),
+            title: Text("feedback".tr()),
             onTap: () {
               var uriFeedback = Uri(
                   scheme: 'mailto',
                   path: 'askmranderson@gmail.com',
                   queryParameters: {
-                    'subject': 'Feedback voor Pyre'
+                    'subject': 'feedback_subject_mail'.tr()
                   }).toString();
               launch(uriFeedback);
             },
-          )
+          ),
+          ListTile(
+            title: Text("review".tr()),
+              onTap: () {
+                final InAppReview inAppReview = InAppReview.instance;
+                inAppReview.isAvailable().then((bool isAvailable) {
+                  inAppReview.requestReview();
+                });
+              },
+          ),
         ],
       );
     });

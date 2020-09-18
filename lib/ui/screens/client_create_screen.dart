@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/ui/widgets/Bullet.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _ClientCreatorState extends State<ClientCreator> {
           preferredSize: Size.fromHeight(230.0),
           child: AppBar(
             title: Text(
-              "Opdrachtgever toevoegen",
+              "add_client".tr(),
             ),
             flexibleSpace: Container(
               decoration: BoxDecoration(
@@ -77,9 +78,11 @@ class _ClientCreatorState extends State<ClientCreator> {
                       child: TextFormField(
                         controller: _nameController,
                         validator: (String value) =>
-                            value.trim().isEmpty ? "Vul een naam in" : null,
+                            value.trim().isEmpty ? "add_name".tr() : null,
                         style: TextStyle(fontSize: 24, color: Colors.white),
-                        decoration: InputDecoration(hintText: "klant", hintStyle: TextStyle(color: Colors.white54)),
+                        decoration: InputDecoration(
+                            hintText: "customer".tr(),
+                            hintStyle: TextStyle(color: Colors.white54)),
                       ),
                     ),
                   ],
@@ -123,7 +126,7 @@ class _ClientCreatorState extends State<ClientCreator> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                   child: Text(
-                    "Project",
+                    "project".tr(),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -132,23 +135,23 @@ class _ClientCreatorState extends State<ClientCreator> {
                   child: TextFormField(
                     controller: _nameProjectController,
                     validator: (String value) =>
-                        value.trim().isEmpty ? "Vul een naam in" : null,
-                    decoration: InputDecoration(hintText: "Project naam"),
+                        value.trim().isEmpty ? "add_name".tr() : null,
+                    decoration: InputDecoration(hintText: "project_name".tr()),
                   ),
                 ),
                 TextFormField(
                   controller: _rateController,
                   keyboardType: TextInputType.number,
                   validator: (String value) =>
-                      value.trim().isEmpty ? "Vul een rate in" : null,
-                  decoration: InputDecoration(hintText: "Uurloon"),
+                      value.trim().isEmpty ? "add_rate".tr() : null,
+                  decoration: InputDecoration(hintText: "hour_rate".tr()),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Factureerbaar"),
+                      Text("invoiceable".tr()),
                       Switch(
                           value: _isSwitched,
                           onChanged: (value) {

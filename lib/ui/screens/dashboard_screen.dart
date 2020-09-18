@@ -1,11 +1,11 @@
-
 import 'package:eventtracker/bloc/RegistrationBloc.dart';
-import 'package:eventtracker/ui/widgets/Bullet.dart';
-import 'package:eventtracker/ui/widgets/Loading.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/screens/registration_screen.dart';
+import 'package:eventtracker/ui/widgets/Bullet.dart';
+import 'package:eventtracker/ui/widgets/Loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/sup.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -51,13 +51,13 @@ class _DashboardOverviewState extends State<DashboardOverview>
     });
   }
 
-  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
-
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
     first = DateTime(first.year, first.month, first.day);
     last = DateTime(last.year, last.month, last.day);
 
     BlocProvider.of<DashboardBloc>(context)
-        .add(HoursUpdated(DateTimeRange(start: first, end : last)));
+        .add(HoursUpdated(DateTimeRange(start: first, end: last)));
     setState(() {
       _firstDay = first;
       _lastDay = last;
@@ -67,7 +67,6 @@ class _DashboardOverviewState extends State<DashboardOverview>
 
   void _onCalenderCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-
     first = DateTime(first.year, first.month, first.day);
     last = DateTime(last.year, last.month, last.day);
 
@@ -81,8 +80,8 @@ class _DashboardOverviewState extends State<DashboardOverview>
       listeners: [
         BlocListener<RegistrationBloc, RegistrationState>(
             listener: (context, state) {
-          BlocProvider.of<DashboardBloc>(context)
-              .add(HoursUpdated(DateTimeRange(start: _firstDay, end : _lastDay)));
+          BlocProvider.of<DashboardBloc>(context).add(
+              HoursUpdated(DateTimeRange(start: _firstDay, end: _lastDay)));
         }),
       ],
       child:
@@ -102,8 +101,8 @@ class _DashboardOverviewState extends State<DashboardOverview>
         }
         if (state is DashboardLoadFailed) {
           return QuickSup.error(
-            title: "Er is iets mis gegaan",
-            retryText: "Probeer opnieuw",
+            title: "something_went_wrong".tr(),
+            retryText: "try_again".tr(),
           );
         }
         return Container();
@@ -151,7 +150,7 @@ class _DashboardOverviewState extends State<DashboardOverview>
                   ),
                   title: Text(booking[index].clientName),
                   subtitle: Text(booking[index].projectName),
-                  trailing: Text(booking[index].minutesToUIString() + " uur"),
+                  trailing: Text("amount_of_hours".tr(args: [booking[index].minutesToUIString()])),
                   onTap: () => {
                         Navigator.push(
                           context,
@@ -175,7 +174,7 @@ class _DashboardOverviewState extends State<DashboardOverview>
       );
     } else {
       return Center(
-          child: QuickSup.empty(subtitle: "Nog geen registraties op deze dag"));
+          child: QuickSup.empty(subtitle: "no_registrations_yet".tr()));
     }
   }
 

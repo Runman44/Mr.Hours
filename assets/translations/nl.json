@@ -1,0 +1,51 @@
+{
+  "overview_title": "Overzicht",
+  "customer_title": "Klanten",
+  "rapport_title": "Rapportage",
+  "settings_title": "Instellingen",
+
+  "add_client": "Klanten toevoegen",
+  "add_name": "Vul een naam in",
+  "customer": "Klant",
+  "no_customers_warning": "Nog geen klanten aangemaakt",
+  "select_customer": "Selecteer een klant",
+  "change_customer": "Klant wijzigen",
+  "choose_customer": "Kies een klant",
+
+  "project": "Project",
+  "project_name": "Project naam",
+  "add_project": "Project toevoegen",
+  "select_project": "Selecteer een project",
+  "amount_of_projects": "projecten {}",
+
+  "hour_registration": "Urenregistratie",
+  "no_registrations_yet": "Nog geen registraties op deze dag",
+  "add_rate": "Vul een rate in",
+  "hour_rate": "Uurloon",
+  "invoiceable": "Factureerbaar",
+  "add_hours": "Uren toevoegen",
+  "change_hours": "Uren wijzigen",
+  "amount_of_hours": "{} uur",
+  "rate_of_hours": "€ {} per uur",
+  "choose_period": "Kies een periode",
+  "select_period": "Selecteer periode",
+  "when_did_you_start": "Wanneer ben je begonnen?",
+  "when_did_you_stop": "Wanneer ben je gestopt?",
+
+  "pdf": "Pdf",
+  "show_pdf": "Toon PDF",
+  "date": "Datum",
+  "tasks": "Taken",
+  "hour": "Uur",
+  "total": "Totaal",
+
+  "dark_mode": "Dark-mode",
+  "feedback": "Geef ons feedback",
+  "feedback_subject_mail": "Feedback voor Pyre",
+  "review": "Geef ons een review",
+  "profile_logo": "Geen logo",
+  "invalid_date": "Invalide datum",
+
+  "something_went_wrong": "Er is iets mis gegaan",
+  "try_again": "Probeer opnieuw"
+}

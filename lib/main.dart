@@ -1,11 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:eventtracker/bloc/DashboardBloc.dart';
 import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
 import 'package:eventtracker/ui/screens/home_screen.dart';
-import 'package:eventtracker/bloc/DashboardBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
 import 'bloc/ClientBloc.dart';
 import 'bloc/RegistrationBloc.dart';
 import 'bloc/pdf_bloc.dart';
@@ -20,7 +21,12 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  initializeDateFormatting().then((_) => runApp(MultiBlocProvider(
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en'), Locale('nl')],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en'),
+      child: MultiBlocProvider(
         providers: [
           BlocProvider<ClientBloc>(
             create: (_) => ClientBloc(data),
@@ -32,14 +38,17 @@ void main() async {
             create: (_) => PdfBloc(data),
           ),
           BlocProvider<DashboardBloc>(
-            create: (context) => DashboardBloc(data, BlocProvider.of<ClientBloc>(context)),
+            create: (context) =>
+                DashboardBloc(data, BlocProvider.of<ClientBloc>(context)),
           ),
           BlocProvider<SettingsBloc>(
             create: (_) => SettingsBloc(data),
           ),
         ],
-    child: TimeApp(),
-      )));
+        child: TimeApp(),
+      ),
+    ),
+  );
 }
 
 class TimeApp extends StatefulWidget {
@@ -53,7 +62,9 @@ class _TimeAppState extends State<TimeApp> {
     super.initState();
     BlocProvider.of<ClientBloc>(context).add(LoadClients());
     BlocProvider.of<SettingsBloc>(context).add(LoadToggles());
-    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DateTimeRange(start: DateTime.now().subtract(Duration(days: 4)), end : DateTime.now().add(Duration(days: 4)))));
+    BlocProvider.of<DashboardBloc>(context).add(HoursUpdated(DateTimeRange(
+        start: DateTime.now().subtract(Duration(days: 4)),
+        end: DateTime.now().add(Duration(days: 4)))));
   }
 
   @override
@@ -62,11 +73,13 @@ class _TimeAppState extends State<TimeApp> {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Pyre',
-          theme: state.settings.darkMode ? darkTheme(context) : lightTheme(context),
-          home: MyHomePage()
-      );
+          theme: state.settings.darkMode
+              ? darkTheme(context)
+              : lightTheme(context),
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          home: MyHomePage());
     });
   }
 }
-
-

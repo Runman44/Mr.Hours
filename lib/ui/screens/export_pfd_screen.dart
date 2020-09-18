@@ -14,6 +14,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 import 'package:share/share.dart';
 import 'package:sup/quick_sup.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ExportPdfPage extends StatefulWidget {
   final int clientId;
@@ -75,7 +76,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
           child: pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              pw.Text('Totaal:'),
+              pw.Text('total'.tr() + ":"),
               pw.Text(minutesToUIStringz(bookings
                   .map<int>((e) => e.totalMinutes())
                   .reduce((value, element) => value + element))),
@@ -102,7 +103,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pdf"),
+        title: Text("pdf".tr()),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -124,7 +125,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
             child: IconButton(
               icon: Icon(Icons.file_download),
               onPressed: () {
-                Share.shareFiles(['$path'], text: 'Great picture');
+                Share.shareFiles(['$path'], text: 'hour_registration'.tr());
               },
             ),
           ),
@@ -153,7 +154,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
       }
       return Center(
         child: QuickSup.error(
-          title: "Er is iets mis gegaan",
+          title: "something_went_wrong".tr(),
         ),
       );
     });
@@ -171,7 +172,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
               padding: const pw.EdgeInsets.only(left: 20),
               alignment: pw.Alignment.centerLeft,
               child: pw.Text(
-                'Urenregistratie',
+                'hour_registration'.tr(),
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 40,
@@ -198,7 +199,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
   }
 
   pw.Widget _contentTable(pw.Context context, List<DashboardItem> bookings) {
-    const tableHeaders = ['Datum', 'Project', 'Taken', 'Uur'];
+    var tableHeaders = ['date'.tr(), 'project'.tr(), 'tasks'.tr(), 'hour'.tr()];
 
     String getValue(DashboardItem booking, int col) {
       switch (col) {
