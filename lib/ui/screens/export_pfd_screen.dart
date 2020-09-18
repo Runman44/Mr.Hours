@@ -40,7 +40,7 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/urenregistratie-${DateTime.now().toString()}.pdf');
+    return File('$path/registration-${DateTime.now().toString()}.pdf');
   }
 
   Future<String> get _localPath async {

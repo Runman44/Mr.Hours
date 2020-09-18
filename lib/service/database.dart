@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
   final Database _db;
-  static const int DB_VERSION = 1;
+  static const int DB_VERSION = 2;
 
   DatabaseService(this._db) : assert(_db != null);
 
