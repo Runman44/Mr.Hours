@@ -152,6 +152,13 @@ class _ExportPdfPageState extends State<ExportPdfPage> {
           });
         }
       }
+      if (pdfState is PdfEmpty) {
+        return Center(
+          child: QuickSup.empty(
+            title: "no_bookings_for_pdf".tr(),
+          ),
+        );
+      }
       return Center(
         child: QuickSup.error(
           title: "something_went_wrong".tr(),

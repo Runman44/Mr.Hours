@@ -38,10 +38,11 @@
   "tasks": "Task",
   "hour": "Hour",
   "total": "Total",
+  "no_bookings_for_pdf": "No registrations for the chosen period",
 
   "dark_mode": "Dark-mode",
   "feedback": "Give us feedback",
-  "feedback_subject_mail": "Feedback for Pyre",
+  "feedback_subject_mail": "Feedback for Tide",
   "review": "Give us a review",
   "profile_logo": "No logo",
   "invalid_date": "Invalid date",

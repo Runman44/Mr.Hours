@@ -38,10 +38,11 @@
   "tasks": "Taken",
   "hour": "Uur",
   "total": "Totaal",
+  "no_bookings_for_pdf": "Geen urenregistraties voor de gekozen periode",
 
   "dark_mode": "Dark-mode",
   "feedback": "Geef ons feedback",
-  "feedback_subject_mail": "Feedback voor Pyre",
+  "feedback_subject_mail": "Feedback voor Tide",
   "review": "Geef ons een review",
   "profile_logo": "Geen logo",
   "invalid_date": "Invalide datum",

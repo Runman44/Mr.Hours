@@ -27,7 +27,11 @@ class PdfBloc extends Bloc<PdfEvent, PdfState> {
 
       try {
         List<DashboardItem> items = await data.listRegistrations(event.datePeriod);
-        yield PdfLoadSuccess(items, event.datePeriod);
+        if (items.isEmpty) {
+          yield PdfEmpty();
+        } else {
+          yield PdfLoadSuccess(items, event.datePeriod);
+        }
       } catch (exception) {
         yield PdfLoadFailed();
       }
@@ -40,6 +44,8 @@ abstract class PdfState {
 }
 
 class PdfInit extends PdfState {}
+
+class PdfEmpty extends PdfState {}
 
 class PdfLoadInProgress extends PdfState {}
 

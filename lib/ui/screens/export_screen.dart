@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/model/model.dart';
 import 'package:eventtracker/ui/screens/export_pfd_screen.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/quick_sup.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ExportPage extends StatefulWidget {
   @override
@@ -30,7 +30,8 @@ class _ExportPageState extends State<ExportPage> {
 
     DateTime selectedPeriodStart = DateTime.now().subtract(Duration(days: 7));
     DateTime selectedPeriodEnd = DateTime.now();
-    _selectedPeriod = DateTimeRange(start: selectedPeriodStart, end: selectedPeriodEnd);
+    _selectedPeriod =
+        DateTimeRange(start: selectedPeriodStart, end: selectedPeriodEnd);
   }
 
   //TODO only rebuild whats needed to be rebuild.
@@ -91,38 +92,49 @@ class _ExportPageState extends State<ExportPage> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today),
-                  SizedBox(width: 20),
-                  Text(
-                    "${_dateFormat.format(_selectedPeriod.start)}",
-                  ),
-                ],
+              child: GestureDetector(
+                onTap: () async {
+                  final period = await showDateRangePicker(
+                      context: context,
+                      firstDate: _firstDate,
+                      lastDate: _lastDate);
+                  if (period != null) {
+                    _onSelectedDateChanged(period);
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today),
+                    SizedBox(width: 20),
+                    Text(
+                      "${_dateFormat.format(_selectedPeriod.start)}",
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today),
-                  SizedBox(width: 20),
-                  Text(
-                    "${_dateFormat.format(_selectedPeriod.end)}",
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: RaisedButton(
-                child: Text("select_period".tr()),
-                onPressed: () async {
-                  final period = await showDateRangePicker(context: context, firstDate: _firstDate, lastDate: _lastDate);
+              child: GestureDetector(
+                onTap: () async {
+                  final period = await showDateRangePicker(
+                      context: context,
+                      firstDate: _firstDate,
+                      lastDate: _lastDate);
                   if (period != null) {
                     _onSelectedDateChanged(period);
                   }
-              },)
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today),
+                    SizedBox(width: 20),
+                    Text(
+                      "${_dateFormat.format(_selectedPeriod.end)}",
+                    ),
+                  ],
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
