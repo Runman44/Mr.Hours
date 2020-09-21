@@ -8,6 +8,7 @@
   "add_name": "Enter a name",
   "customer": "Customer",
   "no_customers_warning": "No customer created yet",
+  "create_customer": "Create customer",
   "select_customer": "Select a customer",
   "change_customer": "Change customer",
   "choose_customer": "Choose customer",

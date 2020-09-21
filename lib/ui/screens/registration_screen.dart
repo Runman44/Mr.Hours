@@ -1,4 +1,5 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eventtracker/bloc/ClientBloc.dart';
 import 'package:eventtracker/bloc/RegistrationBloc.dart';
 import 'package:eventtracker/model/model.dart';
@@ -6,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sup/quick_sup.dart';
-import 'package:easy_localization/easy_localization.dart';
+
+import 'client_create_screen.dart';
 
 class RegistrationEditor extends StatefulWidget {
   final int clientId;
@@ -109,14 +111,17 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
               if (widget.clientId != null &&
                   widget.projectId != null &&
                   widget.registration != null) {
-                BlocProvider.of<RegistrationBloc>(context).add(EditRegistration(
+                BlocProvider.of<RegistrationBloc>(context).add(
+                  EditRegistration(
                     widget.registration,
                     widget.clientId,
                     widget.projectId,
                     _startDateTime,
                     _endDateTime,
                     0,
-                    _taskController.text.trim(),),);
+                    _taskController.text.trim(),
+                  ),
+                );
               } else {
                 BlocProvider.of<RegistrationBloc>(context).add(
                     CreateRegistration(
@@ -240,7 +245,8 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         }
                       },
                       autovalidate: true,
-                      validator: (date) => date == null ? 'invalid_date'.tr() : null,
+                      validator: (date) =>
+                          date == null ? 'invalid_date'.tr() : null,
                       initialValue: _startDateTime,
                       onChanged: (date) => setState(() {
                         _startDateTime = date;
@@ -278,7 +284,8 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
                         }
                       },
                       autovalidate: true,
-                      validator: (date) => date == null ? 'invalid_date'.tr() : null,
+                      validator: (date) =>
+                          date == null ? 'invalid_date'.tr() : null,
                       initialValue: _endDateTime,
                       onChanged: (date) => setState(() {
                         _endDateTime = date;
@@ -299,8 +306,24 @@ class _RegistrationEditorState extends State<RegistrationEditor> {
           }
           if (clientState is ClientsLoadEmpty) {
             return Center(
-              child: QuickSup.empty(
-                subtitle: 'no_customers_warning'.tr(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QuickSup.empty(
+                    subtitle: 'no_customers_warning'.tr(),
+                  ),
+                  RaisedButton(
+                      child: Text("create_customer".tr()),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ClientCreator(),
+                          ),
+                        );
+                      })
+                ],
               ),
             );
           }
