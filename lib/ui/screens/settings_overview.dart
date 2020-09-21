@@ -11,10 +11,9 @@ import 'package:easy_localization/easy_localization.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var settingsBloc = BlocProvider.of<SettingsBloc>(context);
 
     void _selectImage(File savedImage) {
-      settingsBloc.add(ChangeLogo(savedImage));
+      BlocProvider.of<SettingsBloc>(context).add(ChangeLogo(savedImage));
     }
 
     return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
@@ -32,7 +31,7 @@ class SettingsPage extends StatelessWidget {
             title: Text("dark_mode".tr()),
             value: state.settings.darkMode,
             onChanged: (newValue) {
-              settingsBloc.add(ToggleDarkMode(newValue));
+              BlocProvider.of<SettingsBloc>(context).add(ToggleDarkMode(newValue));
             },
           ),
           ListTile(

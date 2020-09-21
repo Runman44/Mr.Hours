@@ -128,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             registration: null,
                             startDate: DateTime.now(),
                             endDate: DateTime.now(),
+                            tasks: "",
                           )),
                     );
                   }),
