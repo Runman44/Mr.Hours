@@ -10,7 +10,7 @@
 
     <application
         android:name=".Application"
-        android:label="Tide"
+        android:label="Mr.Hours"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
