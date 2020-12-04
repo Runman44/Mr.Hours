@@ -11,12 +11,12 @@
   "create_customer": "Create customer",
   "select_customer": "Select a customer",
   "change_customer": "Change customer",
-  "choose_customer": "Choose customer",
+  "choose_customer": "Which customer?",
 
   "project": "Project",
   "project_name": "Project name",
   "add_project": "Add project",
-  "select_project": "Select a project",
+  "select_project": "Which project?",
   "amount_of_projects": "projects {}",
 
   "hour_registration": "Hour registration",
@@ -36,7 +36,7 @@
   "pdf": "Pdf",
   "show_pdf": "Show PDF",
   "date": "Date",
-  "tasks": "Task",
+  "tasks": "Which task?",
   "hour": "Hour",
   "total": "Total",
   "no_bookings_for_pdf": "No registrations for the chosen period",

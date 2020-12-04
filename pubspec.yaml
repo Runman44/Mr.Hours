@@ -61,6 +61,8 @@ dependencies:
   in_app_review: ^0.2.0+4
   easy_localization: ^2.3.3
 
+  firebase_auth_ui: ^1.0.1
+
 
 dependency_overrides:
   path: ^1.6.4
@@ -104,12 +106,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: QuickSand
+     - family: Rubik
        fonts:
-         - asset: assets/fonts/Quicksand-Regular.otf
-         - asset: assets/fonts/Quicksand-Bold.otf
+         - asset: assets/fonts/Rubik-Regular.ttf
+         - asset: assets/fonts/Rubik-Bold.ttf
            weight: 700
-         - asset: assets/fonts/Quicksand-Italic.otf
+         - asset: assets/fonts/Rubik-Italic.ttf
            style: italic
   #   - family: Trajan Pro
   #     fonts:

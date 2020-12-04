@@ -9,7 +9,7 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
       primaryColorBrightness: Brightness.dark,
       accentColor: Colors.teal[300],
       accentColorBrightness: Brightness.dark,
-      fontFamily: 'QuickSand',
+      fontFamily: 'Rubik',
       scaffoldBackgroundColor: Colors.white,
       buttonTheme: ButtonTheme.of(context).copyWith(
         buttonColor: Colors.teal[600],
@@ -28,7 +28,7 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
       primaryColorBrightness: Brightness.dark,
       accentColor: Colors.teal[300],
       accentColorBrightness: Brightness.dark,
-      fontFamily: 'QuickSand',
+      fontFamily: 'Rubik',
       scaffoldBackgroundColor: Colors.grey[800],
       buttonTheme: ButtonTheme.of(context).copyWith(
         buttonColor: Colors.teal[600],

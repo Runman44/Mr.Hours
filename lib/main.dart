@@ -1,16 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:eventtracker/bloc/DashboardBloc.dart';
-import 'package:eventtracker/service/database.dart';
 import 'package:eventtracker/themes.dart';
-import 'package:eventtracker/ui/screens/home_screen.dart';
+import 'package:eventtracker/view/bloc/ClientBloc.dart';
+import 'package:eventtracker/view/bloc/DashboardBloc.dart';
+import 'package:eventtracker/view/bloc/RegistrationBloc.dart';
+import 'package:eventtracker/view/bloc/pdf_bloc.dart';
+import 'package:eventtracker/view/bloc/settings_bloc.dart';
+import 'package:eventtracker/view/service/database.dart';
+import 'package:eventtracker/view/ui/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/ClientBloc.dart';
-import 'bloc/RegistrationBloc.dart';
-import 'bloc/pdf_bloc.dart';
-import 'bloc/settings_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,14 +72,14 @@ class _TimeAppState extends State<TimeApp> {
     return BlocBuilder<SettingsBloc, SettingsState>(builder: (context, state) {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Pyre',
+          title: 'Mr.Hours',
           theme: state.settings.darkMode
               ? darkTheme(context)
               : lightTheme(context),
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: MyHomePage());
+          home: LoginPage());
     });
   }
 }

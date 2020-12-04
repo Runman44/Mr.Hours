@@ -11,12 +11,12 @@
   "create_customer": "Klant aanmaken",
   "select_customer": "Selecteer een klant",
   "change_customer": "Klant wijzigen",
-  "choose_customer": "Kies een klant",
+  "choose_customer": "Welke klant?",
 
   "project": "Project",
   "project_name": "Project naam",
   "add_project": "Project toevoegen",
-  "select_project": "Selecteer een project",
+  "select_project": "Welk project?",
   "amount_of_projects": "projecten {}",
 
   "hour_registration": "Urenregistratie",
@@ -36,7 +36,7 @@
   "pdf": "Pdf",
   "show_pdf": "Toon PDF",
   "date": "Datum",
-  "tasks": "Taken",
+  "tasks": "Welke activiteit?",
   "hour": "Uur",
   "total": "Totaal",
   "no_bookings_for_pdf": "Geen urenregistraties voor de gekozen periode",
